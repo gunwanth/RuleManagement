@@ -146,6 +146,36 @@ export function WorkflowBuilder({
   const [activeFnParams, setActiveFnParams] = useState<Record<string, unknown>>({})
   const [activeFnOutput, setActiveFnOutput] = useState<string | null>(null)
 
+  const [sidebarWidth, setSidebarWidth] = useState(300)
+  const [isResizing, setIsResizing] = useState(false)
+
+  const startResizing = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsResizing(true)
+  }
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return
+      const newWidth = Math.max(260, Math.min(600, e.clientX))
+      setSidebarWidth(newWidth)
+    }
+
+    const handleMouseUp = () => {
+      setIsResizing(false)
+    }
+
+    if (isResizing) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isResizing])
+
   const isBlankWorkflow = useMemo(
     () => nodes.length === 0 && edges.length === 0,
     [nodes.length, edges.length],
@@ -735,7 +765,7 @@ export function WorkflowBuilder({
         </div>
       </header>
 
-      <div className="builderBody">
+      <div className={`builderBody ${isResizing ? 'isResizing' : ''}`} style={{ gridTemplateColumns: `${sidebarWidth}px 1fr` }}>
         <aside className="builderSidebar">
           <Section
             title="Nodes"
@@ -1203,6 +1233,12 @@ export function WorkflowBuilder({
             </div>
           </Section>
         </aside>
+
+        <div
+          className={`sidebarResizeHandle ${isResizing ? 'isResizing' : ''}`}
+          style={{ left: `${sidebarWidth}px` }}
+          onMouseDown={startResizing}
+        />
 
         <div className="canvasWrap" ref={wrapperRef}>
           <ReactFlow

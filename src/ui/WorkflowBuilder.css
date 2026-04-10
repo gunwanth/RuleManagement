@@ -19,7 +19,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  min-width: 260px;
+  min-width: 0;
+  flex: 0 0 auto;
 }
 
 .builderTitleBlock {
@@ -57,7 +58,8 @@
 }
 
 .builderInput {
-  width: 240px;
+  width: 100%;
+  max-width: 240px;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid rgba(17, 24, 39, 0.12);
@@ -76,6 +78,31 @@
   display: grid;
   grid-template-columns: 300px 1fr;
   min-height: 0;
+  position: relative;
+}
+
+.builderBody.isResizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.sidebarResizeHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 120ms ease;
+  z-index: 100;
+  transform: translateX(-2px);
+  /* Place it relative to the first column width */
+  left: var(--sidebar-width, 300px);
+}
+
+.sidebarResizeHandle:hover,
+.sidebarResizeHandle.isResizing {
+  background: rgba(124, 58, 237, 0.4);
 }
 
 .builderSidebar {
@@ -83,7 +110,12 @@
   border-right: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(10px);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
 }
 
 .sideSection {
@@ -92,6 +124,8 @@
   border-radius: var(--radius-lg);
   padding: 12px;
   box-shadow: 0 10px 22px rgba(17, 24, 39, 0.06);
+  min-width: 0;
+  width: 100%;
 }
 
 .sideSection + .sideSection {
@@ -312,6 +346,10 @@
 .paletteLabel {
   font-weight: 700;
   letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .sideRow {
@@ -334,6 +372,11 @@
   font-family: ui-monospace, Consolas, monospace;
   font-size: 12px;
   color: rgba(17, 24, 39, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  text-align: right;
 }
 
 .sideEmpty {
@@ -466,7 +509,7 @@
 .fnItem {
   width: 100%;
   display: grid;
-  grid-template-columns: 28px 1fr auto;
+  grid-template-columns: 28px 1fr min-content;
   gap: 10px;
   align-items: center;
   text-align: left;
@@ -476,6 +519,7 @@
   border: 1px solid rgba(17, 24, 39, 0.1);
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  min-width: 0;
 }
 
 .fnItem:hover {
@@ -497,6 +541,10 @@
 .fnName {
   font-weight: 750;
   letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .fnKind {
@@ -641,6 +689,10 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .dashCardSub {
@@ -812,6 +864,10 @@
   font-weight: 900;
   letter-spacing: -0.2px;
   color: rgba(17, 24, 39, 0.86);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .caseMeta {
