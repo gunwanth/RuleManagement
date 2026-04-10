@@ -1,0 +1,908 @@
+.builderRoot {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.builderTopbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+.builderTopbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 260px;
+}
+
+.builderTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.builderTitle {
+  font-weight: 850;
+  letter-spacing: -0.5px;
+}
+
+.builderSubtitle {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.builderTopbarRight {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.builderInputWrap {
+  display: grid;
+  gap: 6px;
+}
+
+.builderLabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.builderInput {
+  width: 240px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.8);
+  outline: none;
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.builderInput:focus {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+}
+
+.builderBody {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: 0;
+}
+
+.builderSidebar {
+  padding: 14px 14px;
+  border-right: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  overflow: auto;
+}
+
+.sideSection {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.06);
+}
+
+.sideSection + .sideSection {
+  margin-top: 12px;
+}
+
+.sideTitle {
+  font-weight: 800;
+  letter-spacing: -0.35px;
+}
+
+.sideHint {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.sectionHeader {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  padding: 2px 2px 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sectionHeader:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.22);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.sectionChevron {
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.03);
+  color: rgba(17, 24, 39, 0.55);
+  transition: transform 140ms ease;
+  flex: 0 0 auto;
+}
+
+.sectionChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sectionBody {
+  padding-top: 2px;
+}
+
+.canvasNodeList {
+  display: grid;
+  gap: 8px;
+}
+
+.listTitle {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.55);
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+}
+
+.canvasNodeItem {
+  display: grid;
+  grid-template-columns: 1fr 34px;
+  gap: 10px;
+  align-items: center;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.canvasNodeItemSelected {
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 16px 34px rgba(124, 58, 237, 0.12);
+}
+
+.canvasNodeMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.canvasNodeMain:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.22);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.canvasNodeIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.14);
+  flex: 0 0 auto;
+}
+
+.canvasNodeText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.canvasNodeName {
+  font-weight: 850;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.canvasNodeKind {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.55);
+  text-transform: capitalize;
+}
+
+.canvasNodeDelete {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  margin-right: 10px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(17, 24, 39, 0.03);
+  cursor: pointer;
+  color: rgba(17, 24, 39, 0.6);
+}
+
+.canvasNodeDelete:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.22);
+  color: rgba(153, 27, 27, 0.95);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  flex: 1 1 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: rgba(17, 24, 39, 0.72);
+}
+
+.tabActive {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 14px 30px rgba(124, 58, 237, 0.14);
+  color: rgba(17, 24, 39, 0.85);
+}
+
+.palette {
+  display: grid;
+  gap: 10px;
+}
+
+.paletteItem {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  cursor: grab;
+  user-select: none;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  outline: none;
+}
+
+.paletteItem:hover {
+  transform: translateY(-1px);
+  border-color: rgba(17, 24, 39, 0.16);
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.1);
+}
+
+.paletteItem:active {
+  cursor: grabbing;
+}
+
+.paletteItem:focus-visible {
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+}
+
+.paletteIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.14);
+  flex: 0 0 auto;
+}
+
+.paletteLabel {
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.sideRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(17, 24, 39, 0.04);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  border-radius: 14px;
+}
+
+.sideKey {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sideValue {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.7);
+}
+
+.sideEmpty {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.sideDivider {
+  height: 1px;
+  background: rgba(17, 24, 39, 0.08);
+  margin: 12px 0;
+}
+
+.canvasWrap {
+  position: relative;
+  min-height: 0;
+}
+
+.miniMap {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(17, 24, 39, 0.1) !important;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12) !important;
+}
+
+.flowControls {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(17, 24, 39, 0.1) !important;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12) !important;
+}
+
+.toast {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  background: rgba(17, 24, 39, 0.9);
+  color: white;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.18);
+}
+
+.boardHint {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(17, 24, 39, 0.1) !important;
+  padding: 10px 12px !important;
+  font-size: 12px !important;
+  color: rgba(17, 24, 39, 0.7) !important;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12) !important;
+  margin: 16px !important;
+}
+
+.inspector {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.form {
+  display: grid;
+  gap: 10px;
+}
+
+.formLabel {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.formInput,
+.formSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  outline: none;
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+  color: rgba(17, 24, 39, 0.85);
+}
+
+.formInput:focus,
+.formSelect:focus {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+}
+
+.typePill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.04);
+  color: rgba(17, 24, 39, 0.7);
+  font-weight: 700;
+  width: fit-content;
+  text-transform: capitalize;
+}
+
+.configCard {
+  background: rgba(17, 24, 39, 0.035);
+  border: 1px solid rgba(17, 24, 39, 0.07);
+  border-radius: 14px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.configTitle {
+  font-weight: 800;
+  letter-spacing: -0.25px;
+  color: rgba(17, 24, 39, 0.8);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.fnList {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.fnItem {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.fnItem:hover {
+  transform: translateY(-1px);
+  border-color: rgba(17, 24, 39, 0.16);
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.1);
+}
+
+.fnIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.14);
+}
+
+.fnName {
+  font-weight: 750;
+  letter-spacing: -0.2px;
+}
+
+.fnKind {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.03);
+  color: rgba(17, 24, 39, 0.6);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.stocks {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.stockRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.stockName {
+  font-weight: 700;
+}
+
+.stockQty {
+  font-family: ui-monospace, Consolas, monospace;
+  color: rgba(17, 24, 39, 0.65);
+}
+
+.runLog {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.logRow {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.logOk {
+  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.logBad {
+  border-color: rgba(239, 68, 68, 0.24);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.logTitle {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  font-size: 12px;
+}
+
+.logMsg {
+  margin-top: 4px;
+  color: rgba(17, 24, 39, 0.65);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.createFn {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.createFnActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fnRunner {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.fnOutput {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.04);
+  color: rgba(17, 24, 39, 0.72);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.nodeDash {
+  display: grid;
+  gap: 10px;
+}
+
+.dashCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.dashCard {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.dashCardKey {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.55);
+  text-transform: uppercase;
+  font-weight: 850;
+  letter-spacing: 0.4px;
+}
+
+.dashCardVal {
+  margin-top: 6px;
+  font-weight: 850;
+  letter-spacing: -0.2px;
+  color: rgba(17, 24, 39, 0.86);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dashCardSub {
+  margin-top: 6px;
+  color: rgba(17, 24, 39, 0.6);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.chart {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.03);
+}
+
+.chartTitle {
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  color: rgba(17, 24, 39, 0.75);
+  text-transform: uppercase;
+}
+
+.chartRow {
+  display: grid;
+  grid-template-columns: 64px 1fr 48px;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.chartLabel {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.62);
+  font-weight: 750;
+}
+
+.chartTrack {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.07);
+  overflow: hidden;
+}
+
+.chartFill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.chartFillBefore {
+  background: rgba(37, 99, 235, 0.7);
+}
+
+.chartFillAfter {
+  background: rgba(124, 58, 237, 0.8);
+}
+
+.chartFillOk {
+  background: rgba(34, 197, 94, 0.8);
+}
+
+.chartFillBad {
+  background: rgba(239, 68, 68, 0.75);
+}
+
+.chartMarker {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 18px;
+  background: rgba(17, 24, 39, 0.6);
+  border-radius: 2px;
+}
+
+.chartValue {
+  text-align: right;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.65);
+}
+
+.chartHint {
+  margin-top: 10px;
+  color: rgba(17, 24, 39, 0.6);
+  font-size: 12px;
+}
+
+.skillGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.skillPill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(17, 24, 39, 0.75);
+  font-weight: 800;
+  user-select: none;
+}
+
+.skillPill input {
+  width: 16px;
+  height: 16px;
+}
+
+.testLab {
+  display: grid;
+  gap: 10px;
+}
+
+.testLabTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.testActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.caseList {
+  display: grid;
+  gap: 8px;
+}
+
+.caseItem {
+  display: grid;
+  grid-template-columns: 1fr 34px;
+  gap: 10px;
+  align-items: center;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.caseItemSelected {
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 16px 34px rgba(124, 58, 237, 0.12);
+}
+
+.caseMain {
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.caseMain:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.22);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.caseName {
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.caseMeta {
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.55);
+  line-height: 1.35;
+}
+
+.caseDelete {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  margin-right: 10px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(17, 24, 39, 0.03);
+  cursor: pointer;
+  color: rgba(17, 24, 39, 0.6);
+}
+
+.caseDelete:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.22);
+  color: rgba(153, 27, 27, 0.95);
+}
+
+.gateCard {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.03);
+  display: grid;
+  gap: 10px;
+}
+
+.gateList {
+  display: grid;
+  gap: 8px;
+}
+
+.gateRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.gateName {
+  font-weight: 850;
+  letter-spacing: -0.2px;
+  color: rgba(17, 24, 39, 0.82);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gateVal {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.03);
+  font-weight: 950;
+}
+
+.gatePass {
+  color: rgba(21, 128, 61, 0.95);
+  border-color: rgba(34, 197, 94, 0.22);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.gateFail {
+  color: rgba(153, 27, 27, 0.95);
+  border-color: rgba(239, 68, 68, 0.24);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+@media (max-width: 980px) {
+  .builderBody {
+    grid-template-columns: 1fr;
+  }
+  .builderSidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .builderInput {
+    width: 200px;
+  }
+}

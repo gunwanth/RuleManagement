@@ -1,0 +1,238 @@
+.dashRoot {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.dashTitleRow {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.dashLogo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+.dashTitle {
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  font-size: 18px;
+}
+
+.dashSubtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.dashMain {
+  flex: 1;
+  padding: 0 24px 28px;
+}
+
+.dashHero {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+  max-width: 1180px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.dashHeroCard {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  backdrop-filter: blur(10px);
+}
+
+.dashHeroTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dashHeroHeading {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.dashHeroText {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.dashPreview {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.dashPreviewNode {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+  font-weight: 650;
+}
+
+.dashPreviewIcon {
+  width: 26px;
+  height: 26px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.14);
+}
+
+.dashPreviewArrow {
+  color: rgba(17, 24, 39, 0.35);
+  font-weight: 700;
+}
+
+.dashHeroActions {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dashHint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.dashKbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  margin: 0 4px;
+}
+
+.dashSideCard {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.dashSideTitle {
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin-bottom: 8px;
+}
+
+.dashList {
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.ruleList {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ruleItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.ruleMain {
+  min-width: 0;
+}
+
+.ruleName {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ruleMeta {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ruleActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dashHeaderRight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dashHeaderButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 980px) {
+  .dashHero {
+    grid-template-columns: 1fr;
+  }
+
+  .dashHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .dashHeaderRight {
+    display: flex;
+    justify-content: flex-start;
+  }
+}

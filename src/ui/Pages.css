@@ -1,0 +1,1407 @@
+.pageRoot {
+  padding: 18px 18px 28px;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+.dashboardPage {
+  max-width: 1340px;
+}
+
+.pageHeader {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 18px;
+}
+
+.pageHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pageHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-weight: 950;
+  letter-spacing: -0.8px;
+  font-size: 22px;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.pageKicker {
+  color: rgba(17, 24, 39, 0.62);
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.grid2 {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 14px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(17, 24, 39, 0.08);
+  padding: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.dashboardHero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.dashboardWelcome {
+  font-size: 24px;
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.86);
+  letter-spacing: -0.6px;
+}
+
+.dashboardRange {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dashboardRangeTab {
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: rgba(17, 24, 39, 0.45);
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.dashboardRangeTabActive {
+  color: rgba(17, 24, 39, 0.82);
+  border-bottom-color: rgba(17, 24, 39, 0.82);
+}
+
+.dashboardTopGrid {
+  display: grid;
+  grid-template-columns: 0.8fr 0.8fr 1fr;
+  gap: 14px;
+}
+
+.dashboardBottomGrid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+}
+
+.cardTitle {
+  font-weight: 950;
+  letter-spacing: -0.4px;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.bigNumber {
+  font-size: 44px;
+  font-weight: 950;
+  letter-spacing: -1.6px;
+  color: rgba(17, 24, 39, 0.86);
+  line-height: 1;
+}
+
+.subLabel {
+  margin-top: 6px;
+  color: rgba(17, 24, 39, 0.52);
+}
+
+.splitRow {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  border-top: 1px solid rgba(17, 24, 39, 0.08);
+  padding-top: 14px;
+}
+
+.splitCell {
+  display: grid;
+  gap: 2px;
+}
+
+.splitVal {
+  font-weight: 950;
+  font-size: 22px;
+}
+
+.splitValGood {
+  color: rgba(34, 197, 94, 0.95);
+}
+
+.splitValBad {
+  color: rgba(239, 68, 68, 0.95);
+}
+
+.splitLab {
+  color: rgba(17, 24, 39, 0.5);
+  font-size: 12px;
+}
+
+.costRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.healthGauge {
+  display: grid;
+  gap: 12px;
+  padding-top: 10px;
+}
+
+.healthSegments {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  height: 20px;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.healthSeg {
+  height: 100%;
+}
+
+.healthSegBad {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 122, 122, 0.85),
+    rgba(255, 122, 122, 0.85) 6px,
+    rgba(255, 209, 209, 0.85) 6px,
+    rgba(255, 209, 209, 0.85) 12px
+  );
+}
+
+.healthSegWarn {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 221, 87, 0.85),
+    rgba(255, 221, 87, 0.85) 6px,
+    rgba(255, 244, 179, 0.85) 6px,
+    rgba(255, 244, 179, 0.85) 12px
+  );
+}
+
+.healthSegGood {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(83, 201, 121, 0.85),
+    rgba(83, 201, 121, 0.85) 6px,
+    rgba(180, 239, 197, 0.85) 6px,
+    rgba(180, 239, 197, 0.85) 12px
+  );
+}
+
+.healthNeedle {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 28px;
+  background: rgba(17, 24, 39, 0.8);
+}
+
+.healthNeedle::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  bottom: -1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.72);
+}
+
+.healthValue {
+  font-size: 42px;
+  font-weight: 950;
+  line-height: 1;
+  color: rgba(17, 24, 39, 0.86);
+  text-align: center;
+}
+
+.transportCard {
+  display: grid;
+  grid-template-columns: 130px 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.transportMeta {
+  display: grid;
+  gap: 4px;
+}
+
+.transportMain {
+  font-size: 42px;
+  font-weight: 950;
+  line-height: 1;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.transportSide {
+  display: grid;
+  gap: 18px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.transportSideRow {
+  display: grid;
+  gap: 4px;
+}
+
+.transportSideValue {
+  font-size: 34px;
+  font-weight: 950;
+  line-height: 1;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.transportSideLabel {
+  color: rgba(17, 24, 39, 0.5);
+  font-size: 12px;
+}
+
+.donut {
+  width: 132px;
+  height: 132px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+}
+
+.donutInner {
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 8px;
+}
+
+.donutPct {
+  font-weight: 950;
+  letter-spacing: -0.6px;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.donutLab {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.55);
+  margin-top: 2px;
+}
+
+.costNumbers {
+  display: grid;
+  gap: 10px;
+}
+
+.costLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+.costKey {
+  color: rgba(17, 24, 39, 0.55);
+  font-weight: 850;
+}
+
+.costVal {
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.costHint {
+  color: rgba(17, 24, 39, 0.55);
+  font-size: 12px;
+}
+
+.trend {
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 10px;
+  border-radius: 14px;
+  background: rgba(17, 24, 39, 0.02);
+  border: 1px dashed rgba(17, 24, 39, 0.1);
+}
+
+.trendBar {
+  width: 14px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.16);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+}
+
+.trendGood {
+  background: rgba(34, 197, 94, 0.78);
+}
+
+.trendBad {
+  background: rgba(239, 68, 68, 0.55);
+}
+
+.trendStacked {
+  align-items: flex-end;
+}
+
+.trendBarStack {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  background: rgba(17, 24, 39, 0.08);
+  box-shadow: 0 14px 34px rgba(17, 24, 39, 0.08);
+}
+
+.trendSeg {
+  width: 100%;
+}
+
+.trendSegOk {
+  background: rgba(124, 58, 237, 0.95);
+}
+
+.trendSegFail {
+  background: rgba(239, 68, 68, 0.75);
+}
+
+.ruleRank {
+  display: grid;
+  gap: 10px;
+}
+
+.dashboardLegend {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.58);
+  font-weight: 850;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.legendDotGood {
+  background: rgba(83, 201, 121, 0.95);
+}
+
+.legendDotBad {
+  background: rgba(255, 122, 122, 0.95);
+}
+
+.rankRow {
+  display: grid;
+  gap: 8px;
+}
+
+.rankMain {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rankName {
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.rankMeta {
+  color: rgba(17, 24, 39, 0.5);
+  font-size: 12px;
+}
+
+.rankBar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.08);
+  overflow: hidden;
+}
+
+.rankFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(37, 99, 235, 0.9));
+}
+
+.rankRowChart {
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 14px;
+}
+
+.rankTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.06);
+  display: flex;
+  overflow: hidden;
+}
+
+.rankFillGood {
+  height: 100%;
+  background: rgba(83, 201, 121, 0.95);
+}
+
+.rankFillBad {
+  height: 100%;
+  background: rgba(255, 122, 122, 0.95);
+}
+
+.usageBars {
+  min-height: 310px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 8px 4px;
+  border-radius: 18px;
+  background:
+    linear-gradient(to top, rgba(17, 24, 39, 0.04) 1px, transparent 1px) 0 0 / 100% 25%,
+    rgba(255, 255, 255, 0.35);
+}
+
+.usageBarGroup {
+  flex: 1 1 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.usageBarPair {
+  width: 100%;
+  min-height: 250px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+}
+
+.usageBar {
+  width: min(28px, 42%);
+  border-radius: 8px 8px 0 0;
+}
+
+.usageBarGood {
+  background: rgba(83, 201, 121, 0.92);
+}
+
+.usageBarBad {
+  background: rgba(255, 122, 122, 0.92);
+}
+
+.usageBarLabel {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.52);
+  font-weight: 900;
+}
+
+.ruleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.ruleCard {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(17, 24, 39, 0.08);
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.ruleCardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.ruleCardName {
+  font-weight: 950;
+  letter-spacing: -0.6px;
+  color: rgba(17, 24, 39, 0.86);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ruleCardMeta {
+  color: rgba(17, 24, 39, 0.55);
+  font-size: 12px;
+}
+
+.pill {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.04);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  color: rgba(17, 24, 39, 0.6);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.ruleCardChart {
+  display: grid;
+  gap: 10px;
+}
+
+.chartLabelRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgba(17, 24, 39, 0.6);
+  font-weight: 850;
+  font-size: 12px;
+}
+
+.progress {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.85);
+}
+
+.spark {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sparkDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.1);
+}
+
+.sparkGood {
+  background: rgba(34, 197, 94, 0.85);
+}
+
+.sparkBad {
+  background: rgba(239, 68, 68, 0.65);
+}
+
+.ruleTrend {
+  height: 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  padding: 2px 2px 0;
+  border-radius: 12px;
+  background: rgba(17, 24, 39, 0.02);
+  border: 1px dashed rgba(17, 24, 39, 0.1);
+}
+
+.ruleTrendBar {
+  width: 7px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.1);
+}
+
+.ruleTrendOk {
+  background: rgba(34, 197, 94, 0.78);
+}
+
+.ruleTrendBad {
+  background: rgba(239, 68, 68, 0.55);
+}
+
+.streamBreakdown {
+  display: grid;
+  gap: 6px;
+}
+
+.streamRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  font-size: 12px;
+}
+
+.streamName {
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.75);
+  text-transform: capitalize;
+}
+
+.streamCounts {
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.streamPass {
+  color: rgba(34, 197, 94, 0.95);
+}
+
+.streamFail {
+  color: rgba(239, 68, 68, 0.95);
+}
+
+.streamSep {
+  color: rgba(17, 24, 39, 0.35);
+}
+
+.ruleCardActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.emptyNote {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px dashed rgba(17, 24, 39, 0.15);
+  color: rgba(17, 24, 39, 0.55);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.toast {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  background: rgba(17, 24, 39, 0.9);
+  color: white;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.18);
+  z-index: 60;
+}
+
+.configTitle {
+  font-weight: 900;
+  letter-spacing: -0.25px;
+  color: rgba(17, 24, 39, 0.74);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.formLabel {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.6);
+  font-weight: 900;
+}
+
+.formInput,
+.formSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  outline: none;
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+  color: rgba(17, 24, 39, 0.85);
+  font: inherit;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+}
+
+.sideDivider {
+  height: 1px;
+  background: rgba(17, 24, 39, 0.08);
+  margin: 12px 0;
+}
+
+.sideRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(17, 24, 39, 0.04);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  border-radius: 14px;
+}
+
+.sideKey {
+  color: rgba(17, 24, 39, 0.55);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.sideValue {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.7);
+}
+
+.skillGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.skillPill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(17, 24, 39, 0.75);
+  font-weight: 900;
+  user-select: none;
+}
+
+.skillPill input {
+  width: 16px;
+  height: 16px;
+}
+
+.formTextarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(17, 24, 39, 0.86);
+  outline: none;
+  box-shadow: 0 14px 34px rgba(17, 24, 39, 0.06);
+  resize: vertical;
+  font: inherit;
+}
+
+.labRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.labLabel {
+  display: grid;
+  gap: 6px;
+  color: rgba(17, 24, 39, 0.6);
+  font-size: 12px;
+  font-weight: 900;
+  min-width: 220px;
+}
+
+.labActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.labGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.labList {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.labItem {
+  width: 100%;
+  text-align: left;
+  border-radius: 16px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 50px rgba(17, 24, 39, 0.06);
+  padding: 12px 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+}
+
+.labItemActive {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 18px 50px rgba(124, 58, 237, 0.12);
+}
+
+.labItemTitle {
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.labItemMeta {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.55);
+}
+
+.labEditor {
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.metricChartGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.metricChartCard {
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.025);
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.insightsRoot {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.insightSummaryRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.insightMetricCard {
+  border-radius: 16px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+  min-height: 104px;
+}
+
+.insightMetricLabel {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.52);
+  font-weight: 900;
+}
+
+.insightMetricValue {
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.88);
+}
+
+.insightMetricValueGood {
+  color: rgba(22, 163, 74, 0.95);
+}
+
+.insightMetricMeta {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.46);
+}
+
+.insightBodyGrid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 14px;
+  min-width: 0;
+}
+
+.insightPanel {
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.insightPanelTitle {
+  font-weight: 950;
+  letter-spacing: -0.3px;
+  color: rgba(17, 24, 39, 0.84);
+}
+
+.insightMiniGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.insightMiniCard {
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  background: rgba(17, 24, 39, 0.025);
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.insightMiniName {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.58);
+  text-transform: capitalize;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.insightMiniValue {
+  font-size: 30px;
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.88);
+  line-height: 1;
+}
+
+.insightMiniMeta {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metricBarChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 250px;
+  padding: 10px 4px 0;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.metricBarGroup {
+  flex: 1 1 0;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-width: 0;
+}
+
+.trendAnalysisGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.trendSummaryRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 8px 0 14px;
+}
+
+.trendSummaryItem {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.trendSummaryKey {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.5);
+}
+
+.trendSummaryValue {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.4px;
+  color: rgba(17, 24, 39, 0.84);
+}
+
+.trendSummaryValueSmall {
+  font-size: 18px;
+}
+
+.trendAnalysisCard {
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.025);
+  padding: 12px 14px;
+  display: grid;
+  gap: 4px;
+}
+
+.trendAnalysisLabel {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.5);
+}
+
+.trendAnalysisValue {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.4px;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.trendAnalysisMeta {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.52);
+}
+
+.metricBarValues {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.metricBarValueGood {
+  color: rgba(22, 163, 74, 0.95);
+}
+
+.metricBarValueBad {
+  color: rgba(239, 68, 68, 0.9);
+}
+
+.metricBarPair {
+  min-height: 190px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+}
+
+.metricBar {
+  width: min(28px, 42%);
+  border-radius: 10px 10px 0 0;
+  border: 1px solid currentColor;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.metricBarGood {
+  color: rgba(34, 197, 94, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.08);
+}
+
+.metricBarBad {
+  color: rgba(239, 68, 68, 0.8);
+  box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.08);
+}
+
+.metricBarLabel {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.55);
+  font-weight: 900;
+}
+
+.insightTableWrap {
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.insightTable {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.insightTableHead,
+.insightTableRow {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.7fr 0.8fr 0.6fr;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.insightTableHead {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.48);
+  padding: 0 10px;
+}
+
+.insightTableRow {
+  padding: 14px 10px;
+  border-radius: 14px;
+  background: rgba(17, 24, 39, 0.025);
+  border: 1px solid rgba(17, 24, 39, 0.05);
+}
+
+.insightTableTitle {
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.84);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.insightTableMuted {
+  color: rgba(17, 24, 39, 0.52);
+  font-size: 12px;
+}
+
+.miniTrendSvg {
+  width: 72px;
+  height: 24px;
+  color: rgba(22, 163, 74, 0.9);
+}
+
+.outcomeBar {
+  width: 100%;
+  height: 14px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.08);
+  border: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+.outcomeOk {
+  height: 100%;
+  background: rgba(124, 58, 237, 0.92);
+  min-width: 0;
+}
+
+.outcomeFail {
+  height: 100%;
+  background: rgba(239, 68, 68, 0.8);
+  min-width: 0;
+}
+
+.metricStreamCard {
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 10px;
+}
+
+.labEditorTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.labFooter {
+  margin-top: 12px;
+}
+
+.gateRoot {
+  display: grid;
+  gap: 12px;
+}
+
+.gateGroup {
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.65);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.gateTitleRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.gateTitle {
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.pillOk {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.22);
+  color: rgba(22, 163, 74, 0.95);
+}
+
+.pillBad {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.22);
+  color: rgba(220, 38, 38, 0.95);
+}
+
+.gateList {
+  display: grid;
+  gap: 8px;
+}
+
+.gateItem {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.03);
+}
+
+.gateDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.18);
+}
+
+.gateOk .gateDot {
+  background: rgba(34, 197, 94, 0.85);
+}
+
+.gateBad .gateDot {
+  background: rgba(239, 68, 68, 0.75);
+}
+
+.gateLabel {
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.72);
+}
+
+.gateVal {
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.62);
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .dashboardTopGrid,
+  .dashboardBottomGrid,
+  .transportCard {
+    grid-template-columns: 1fr;
+  }
+  .ruleGrid {
+    grid-template-columns: 1fr;
+  }
+  .labGrid {
+    grid-template-columns: 1fr;
+  }
+  .insightSummaryRow,
+  .insightBodyGrid,
+  .insightTableHead,
+  .insightTableRow {
+    grid-template-columns: 1fr;
+  }
+  .insightMiniGrid {
+    grid-template-columns: 1fr;
+  }
+  .metricBarChart {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  .trendAnalysisGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .trendSummaryRow {
+    grid-template-columns: 1fr 1fr;
+  }
+  .metricBarGroup {
+    min-width: 62px;
+  }
+  .dashboardLegend {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .transportSide {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(17, 24, 39, 0.08);
+    padding-top: 12px;
+  }
+}

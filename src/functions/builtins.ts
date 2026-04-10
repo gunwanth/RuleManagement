@@ -1,0 +1,76 @@
+import type { FunctionDef } from './types'
+
+export const BUILTIN_FUNCTIONS: FunctionDef[] = [
+  {
+    id: 'fn:buy_sweet',
+    kind: 'action',
+    name: 'Buy Sweet',
+    icon: undefined,
+    description: 'Reduces stock when a customer buys sweets.',
+    operationName: 'buy_sweet',
+    operation: 'buy_sweet',
+    params: [
+      { key: 'sweetName', label: 'Sweet name', type: 'string', required: true, placeholder: 'Gulab Jamun' },
+      { key: 'quantity', label: 'Quantity', type: 'number', required: true, placeholder: '1' },
+    ],
+  },
+  {
+    id: 'fn:add_stock',
+    kind: 'action',
+    name: 'Add Stock',
+    icon: undefined,
+    description: 'Adds inventory (restock).',
+    operationName: 'add_stock',
+    operation: 'add_stock',
+    params: [
+      { key: 'sweetName', label: 'Sweet name', type: 'string', required: true, placeholder: 'Jalebi' },
+      { key: 'quantity', label: 'Quantity', type: 'number', required: true, placeholder: '10' },
+    ],
+  },
+  {
+    id: 'fn:delete_sweet',
+    kind: 'action',
+    name: 'Delete Sweet',
+    icon: undefined,
+    description: 'Removes a sweet from the shop.',
+    operationName: 'delete_sweet',
+    operation: 'delete_sweet',
+    params: [{ key: 'sweetName', label: 'Sweet name', type: 'string', required: true, placeholder: 'Rasgulla' }],
+  },
+  {
+    id: 'fn:view_stocks',
+    kind: 'action',
+    name: 'View Stocks',
+    icon: undefined,
+    description: 'Shows the current inventory snapshot.',
+    operationName: 'view_stocks',
+    operation: 'view_stocks',
+    params: [],
+  },
+  {
+    id: 'fn:stock_below',
+    kind: 'condition',
+    name: 'Stock Below',
+    icon: undefined,
+    description: 'Checks if a sweet stock is below a threshold.',
+    operationName: 'stock_below',
+    operation: 'stock_below',
+    params: [
+      { key: 'sweetName', label: 'Sweet name', type: 'string', required: true, placeholder: 'Gulab Jamun' },
+      { key: 'threshold', label: 'Threshold', type: 'number', required: true, placeholder: '10' },
+    ],
+  },
+  {
+    id: 'fn:stock_above_or_equal',
+    kind: 'condition',
+    name: 'Stock Above/Equal',
+    icon: undefined,
+    description: 'Checks if a sweet stock is above or equal to a threshold.',
+    operationName: 'stock_above_or_equal',
+    operation: 'stock_above_or_equal',
+    params: [
+      { key: 'sweetName', label: 'Sweet name', type: 'string', required: true, placeholder: 'Gulab Jamun' },
+      { key: 'threshold', label: 'Threshold', type: 'number', required: true, placeholder: '10' },
+    ],
+  },
+]
