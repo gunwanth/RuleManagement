@@ -2195,7 +2195,7 @@ function NodeTestAccess({
             const result = results[testCase.id]
             const gateFails = (result?.log ?? []).filter((entry) => entry.kind === 'condition' && entry.conditionValue === false).length
             return (
-              <div key={testCase.id} className="caseItem">
+              <div key={testCase.id} className="caseItemAction">
                 <div className="caseMain">
                   <div className="caseName">{testCase.name}</div>
                   <div className="caseMeta">
