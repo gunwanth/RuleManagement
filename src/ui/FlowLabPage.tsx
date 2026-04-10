@@ -564,7 +564,7 @@ function ShopLabBody({
           Run Workflow
         </button>
         <button className="btn" type="button" onClick={() => setShop(createShopStateForRule(rule))}>
-          {rule.type === 'order' ? 'Reset Order State' : 'Reset Shop'}
+          {rule.type === 'order' ? 'Reset Order State' : rule.type === 'support' ? 'Reset Support State' : 'Reset Shop'}
         </button>
         <button className="btn" type="button" onClick={addCase}>
           Add Case
@@ -653,13 +653,13 @@ function ShopLabBody({
                   <option value="fail">Fail</option>
                 </select>
               </label>
-              <ShopStateEditor value={caseDraft.shop} onChange={(next) => setCaseDraft({ ...caseDraft, shop: next })} />
+              <ShopStateEditor ruleType={rule.type} value={caseDraft.shop} onChange={(next) => setCaseDraft({ ...caseDraft, shop: next })} />
             </>
           ) : (
             <>
-              <ShopStateEditor value={shop} onChange={setShop} />
+              <ShopStateEditor ruleType={rule.type} value={shop} onChange={setShop} />
               <div className="sideDivider" />
-              <div className="configTitle">{rule.type === 'order' ? 'Order Triggers' : 'Stocks'}</div>
+              <div className="configTitle">{rule.type === 'order' ? 'Order Triggers' : rule.type === 'support' ? 'Support Signals' : 'Stocks'}</div>
               <div className="streamBreakdown">
                 {rule.type === 'order' ? (
                   <>
@@ -667,6 +667,13 @@ function ShopLabBody({
                     <div className="streamRow"><div className="streamName">Payment</div><div className="streamCounts">{shop.order.paymentConfirmed ? 'Confirmed' : 'Pending'}</div></div>
                     <div className="streamRow"><div className="streamName">Shift</div><div className="streamCounts">{shop.order.assignedShift}</div></div>
                     <div className="streamRow"><div className="streamName">Status</div><div className="streamCounts">{shop.order.status}</div></div>
+                  </>
+                ) : rule.type === 'support' ? (
+                  <>
+                    <div className="streamRow"><div className="streamName">Raised</div><div className="streamCounts">{shop.support.raised ? 'Yes' : 'No'}</div></div>
+                    <div className="streamRow"><div className="streamName">State</div><div className="streamCounts">{shop.support.state}</div></div>
+                    <div className="streamRow"><div className="streamName">Undergoing</div><div className="streamCounts">{shop.support.undergoingTickets}</div></div>
+                    <div className="streamRow"><div className="streamName">Solved / Revoked / Stable</div><div className="streamCounts">{shop.support.solvedTickets} / {shop.support.revokedTickets} / {shop.support.stableTickets}</div></div>
                   </>
                 ) : (
                   Object.entries(shop.items).map(([name, item]) => (
@@ -955,6 +962,22 @@ function createShopStateForRule(rule: RuleRecord): ShopState {
         customerName: '',
         priority: 'standard',
       },
+      support: {
+        ticketId: 'TCK-NEW',
+        customerName: '',
+        issueType: '',
+        priority: 'normal',
+        state: 'new',
+        raised: false,
+        solved: false,
+        revoked: false,
+        stable: false,
+        ticketsRaised: 0,
+        solvedTickets: 0,
+        revokedTickets: 0,
+        stableTickets: 0,
+        undergoingTickets: 0,
+      },
     }
   }
   return createDefaultShopState()
@@ -966,17 +989,89 @@ function cloneShopState(state: ShopState): ShopState {
       Object.entries(state.items).map(([name, item]) => [name, { ...item }]),
     ),
     order: { ...state.order },
+    support: { ...state.support },
   }
 }
 
 function ShopStateEditor({
+  ruleType,
   value,
   onChange,
 }: {
+  ruleType: RuleRecord['type']
   value: ShopState
   onChange: (next: ShopState) => void
 }) {
   const items = Object.values(value.items).sort((a, b) => a.name.localeCompare(b.name))
+
+  if (ruleType === 'support') {
+    return (
+      <>
+        <div className="configTitle">Support Ticket</div>
+        <label className="formLabel">
+          Ticket ID
+          <input className="formInput" value={value.support.ticketId} onChange={(e) => onChange({ ...value, support: { ...value.support, ticketId: e.target.value } })} spellCheck={false} />
+        </label>
+        <label className="formLabel">
+          Customer
+          <input className="formInput" value={value.support.customerName} onChange={(e) => onChange({ ...value, support: { ...value.support, customerName: e.target.value } })} spellCheck={false} />
+        </label>
+        <label className="formLabel">
+          Issue Type
+          <input className="formInput" value={value.support.issueType} onChange={(e) => onChange({ ...value, support: { ...value.support, issueType: e.target.value } })} spellCheck={false} />
+        </label>
+        <label className="formLabel">
+          Priority
+          <select className="formSelect" value={value.support.priority} onChange={(e) => onChange({ ...value, support: { ...value.support, priority: e.target.value as ShopState['support']['priority'] } })}>
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </label>
+        <label className="formLabel">
+          Support State
+          <select className="formSelect" value={value.support.state} onChange={(e) => onChange({ ...value, support: { ...value.support, state: e.target.value as ShopState['support']['state'] } })}>
+            <option value="new">New</option>
+            <option value="open">Open</option>
+            <option value="undergoing">Undergoing</option>
+            <option value="pending_customer">Pending customer</option>
+            <option value="resolved">Resolved</option>
+            <option value="revoked">Revoked</option>
+            <option value="stable">Stable</option>
+          </select>
+        </label>
+        <div className="skillGrid">
+          <label className="skillPill"><input type="checkbox" checked={value.support.raised} onChange={(e) => onChange({ ...value, support: { ...value.support, raised: e.target.checked } })} />Raised</label>
+          <label className="skillPill"><input type="checkbox" checked={value.support.solved} onChange={(e) => onChange({ ...value, support: { ...value.support, solved: e.target.checked } })} />Solved</label>
+          <label className="skillPill"><input type="checkbox" checked={value.support.revoked} onChange={(e) => onChange({ ...value, support: { ...value.support, revoked: e.target.checked } })} />Revoked</label>
+          <label className="skillPill"><input type="checkbox" checked={value.support.stable} onChange={(e) => onChange({ ...value, support: { ...value.support, stable: e.target.checked } })} />Stable</label>
+        </div>
+        <div className="sideDivider" />
+        <div className="configTitle">Ticket Metrics</div>
+        <label className="formLabel">
+          Tickets Raised
+          <input className="formInput" type="number" value={value.support.ticketsRaised} onChange={(e) => onChange({ ...value, support: { ...value.support, ticketsRaised: Number(e.target.value) } })} />
+        </label>
+        <label className="formLabel">
+          Undergoing Tickets
+          <input className="formInput" type="number" value={value.support.undergoingTickets} onChange={(e) => onChange({ ...value, support: { ...value.support, undergoingTickets: Number(e.target.value) } })} />
+        </label>
+        <label className="formLabel">
+          Solved Tickets
+          <input className="formInput" type="number" value={value.support.solvedTickets} onChange={(e) => onChange({ ...value, support: { ...value.support, solvedTickets: Number(e.target.value) } })} />
+        </label>
+        <label className="formLabel">
+          Revoked Tickets
+          <input className="formInput" type="number" value={value.support.revokedTickets} onChange={(e) => onChange({ ...value, support: { ...value.support, revokedTickets: Number(e.target.value) } })} />
+        </label>
+        <label className="formLabel">
+          Stable Tickets
+          <input className="formInput" type="number" value={value.support.stableTickets} onChange={(e) => onChange({ ...value, support: { ...value.support, stableTickets: Number(e.target.value) } })} />
+        </label>
+      </>
+    )
+  }
 
   return (
     <>

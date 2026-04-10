@@ -508,7 +508,13 @@ export function WorkflowBuilder({
   const resetShop = () => {
     setShop(createInitialShopState(ruleType))
     setRunLog([])
-    setToast(ruleType === 'sweetshop' ? 'Reset shop state' : 'Reset scenario state')
+    setToast(
+      ruleType === 'sweetshop'
+        ? 'Reset shop state'
+        : ruleType === 'support'
+          ? 'Reset support state'
+          : 'Reset scenario state',
+    )
   }
 
   const resetCandidate = () => {
@@ -709,6 +715,10 @@ export function WorkflowBuilder({
           ) : ruleType === 'sweetshop' ? (
             <button className="btn" onClick={resetShop}>
               Reset Shop
+            </button>
+          ) : ruleType === 'support' ? (
+            <button className="btn" onClick={resetShop}>
+              Reset Support State
             </button>
           ) : ruleType === 'order' ? (
             <button className="btn" onClick={resetShop}>
@@ -1000,8 +1010,8 @@ export function WorkflowBuilder({
           </Section>
 
           <Section
-            title={ruleType === 'eligibility' ? 'Candidate' : ruleType === 'sweetshop' ? 'Stocks' : 'Scenario State'}
-            hint={ruleType === 'eligibility' ? 'Test inputs' : ruleType === 'sweetshop' ? 'Live shop state' : 'Rule test scenarios'}
+            title={ruleType === 'eligibility' ? 'Candidate' : ruleType === 'sweetshop' ? 'Stocks' : ruleType === 'support' ? 'Support State' : 'Scenario State'}
+            hint={ruleType === 'eligibility' ? 'Test inputs' : ruleType === 'sweetshop' ? 'Live shop state' : ruleType === 'support' ? 'CRM/support test scenarios' : 'Rule test scenarios'}
             open={openStocks}
             onToggle={() => setOpenStocks((v) => !v)}
           >
@@ -1263,6 +1273,151 @@ function ShopStateEditor({
   onChange: (next: ShopState) => void
 }) {
   const items = Object.values(value.items).sort((a, b) => a.name.localeCompare(b.name))
+
+  if (ruleType === 'support') {
+    return (
+      <div className="configCard">
+        <div className="configTitle">Support State</div>
+        <label className="formLabel">
+          Ticket ID
+          <input
+            className="formInput"
+            value={value.support.ticketId}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, ticketId: e.target.value } })}
+            spellCheck={false}
+          />
+        </label>
+        <label className="formLabel">
+          Customer name
+          <input
+            className="formInput"
+            value={value.support.customerName}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, customerName: e.target.value } })}
+            spellCheck={false}
+          />
+        </label>
+        <label className="formLabel">
+          Issue type
+          <input
+            className="formInput"
+            value={value.support.issueType}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, issueType: e.target.value } })}
+            spellCheck={false}
+          />
+        </label>
+        <label className="formLabel">
+          Priority
+          <select
+            className="formSelect"
+            value={value.support.priority}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, priority: e.target.value as ShopState['support']['priority'] } })}
+          >
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </label>
+        <label className="formLabel">
+          Support state
+          <select
+            className="formSelect"
+            value={value.support.state}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, state: e.target.value as ShopState['support']['state'] } })}
+          >
+            <option value="new">New</option>
+            <option value="open">Open</option>
+            <option value="undergoing">Undergoing</option>
+            <option value="pending_customer">Pending customer</option>
+            <option value="resolved">Resolved</option>
+            <option value="revoked">Revoked</option>
+            <option value="stable">Stable</option>
+          </select>
+        </label>
+        <div className="skillGrid">
+          <label className="skillPill">
+            <input
+              type="checkbox"
+              checked={value.support.raised}
+              onChange={(e) => onChange({ ...value, support: { ...value.support, raised: e.target.checked } })}
+            />
+            Ticket raised
+          </label>
+          <label className="skillPill">
+            <input
+              type="checkbox"
+              checked={value.support.solved}
+              onChange={(e) => onChange({ ...value, support: { ...value.support, solved: e.target.checked } })}
+            />
+            Solved
+          </label>
+          <label className="skillPill">
+            <input
+              type="checkbox"
+              checked={value.support.revoked}
+              onChange={(e) => onChange({ ...value, support: { ...value.support, revoked: e.target.checked } })}
+            />
+            Revoked
+          </label>
+          <label className="skillPill">
+            <input
+              type="checkbox"
+              checked={value.support.stable}
+              onChange={(e) => onChange({ ...value, support: { ...value.support, stable: e.target.checked } })}
+            />
+            Stable
+          </label>
+        </div>
+        <div className="sideDivider" />
+        <div className="configTitle">Ticket Metrics</div>
+        <label className="formLabel">
+          Tickets raised
+          <input
+            className="formInput"
+            type="number"
+            value={value.support.ticketsRaised}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, ticketsRaised: Number(e.target.value) } })}
+          />
+        </label>
+        <label className="formLabel">
+          Undergoing tickets
+          <input
+            className="formInput"
+            type="number"
+            value={value.support.undergoingTickets}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, undergoingTickets: Number(e.target.value) } })}
+          />
+        </label>
+        <label className="formLabel">
+          Solved tickets
+          <input
+            className="formInput"
+            type="number"
+            value={value.support.solvedTickets}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, solvedTickets: Number(e.target.value) } })}
+          />
+        </label>
+        <label className="formLabel">
+          Revoked tickets
+          <input
+            className="formInput"
+            type="number"
+            value={value.support.revokedTickets}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, revokedTickets: Number(e.target.value) } })}
+          />
+        </label>
+        <label className="formLabel">
+          Stable tickets
+          <input
+            className="formInput"
+            type="number"
+            value={value.support.stableTickets}
+            onChange={(e) => onChange({ ...value, support: { ...value.support, stableTickets: Number(e.target.value) } })}
+          />
+        </label>
+      </div>
+    )
+  }
 
   return (
     <div className="configCard">
@@ -2124,6 +2279,58 @@ function NodeDashboard({
   const cond =
     fn.kind === 'condition' ? evaluateCondition(shop, fn, params) : null
 
+  if (ruleType === 'support') {
+    const supportPreview =
+      fn.kind === 'action'
+        ? applyAction(shop, fn, params)
+        : null
+    const supportCheck =
+      fn.kind === 'condition'
+        ? evaluateCondition(shop, fn, params)
+        : null
+
+    return (
+      <div className="nodeDash">
+        <div className="configTitle">Node Dashboard</div>
+        <div className="dashCards">
+          <div className="dashCard">
+            <div className="dashCardKey">Function</div>
+            <div className="dashCardVal">{fn.name}</div>
+            <div className="dashCardSub">{fn.description ?? fn.operationName ?? fn.operation}</div>
+          </div>
+          <div className="dashCard">
+            <div className="dashCardKey">Ticket</div>
+            <div className="dashCardVal">{shop.support.ticketId}</div>
+            <div className="dashCardSub">
+              {shop.support.issueType} · {shop.support.priority}
+            </div>
+          </div>
+          <div className="dashCard">
+            <div className="dashCardKey">{fn.kind === 'condition' ? 'Condition' : 'Preview'}</div>
+            <div className="dashCardVal">
+              {fn.kind === 'condition'
+                ? supportCheck?.value ? 'TRUE' : 'FALSE'
+                : shop.support.state}
+            </div>
+            <div className="dashCardSub">
+              {fn.kind === 'condition' ? supportCheck?.message : supportPreview?.message}
+            </div>
+          </div>
+        </div>
+
+        <div className="chart">
+          <div className="chartTitle">Support State</div>
+          <div className="gateList">
+            <div className="gateRow"><div className="gateName">Raised</div><div className={`gateVal ${shop.support.raised ? 'gatePass' : 'gateFail'}`}>{shop.support.raised ? 'YES' : 'NO'}</div></div>
+            <div className="gateRow"><div className="gateName">State</div><div className="gateVal gatePass">{shop.support.state}</div></div>
+            <div className="gateRow"><div className="gateName">Undergoing</div><div className="gateVal gatePass">{shop.support.undergoingTickets}</div></div>
+            <div className="gateRow"><div className="gateName">Solved / Revoked / Stable</div><div className="gateVal gatePass">{shop.support.solvedTickets} / {shop.support.revokedTickets} / {shop.support.stableTickets}</div></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (ruleType === 'order') {
     const orderPreview =
       fn.kind === 'action'
@@ -2316,13 +2523,14 @@ function cloneShopState(state: ShopState): ShopState {
       ]),
     ),
     order: { ...state.order },
+    support: { ...state.support },
   }
 }
 
 function createInitialShopState(
   ruleType: import('../rules/types').RuleType,
 ): ShopState {
-  return ruleType === 'sweetshop' || ruleType === 'order'
+  return ruleType === 'sweetshop' || ruleType === 'order' || ruleType === 'support'
     ? createDefaultShopState()
     : {
         items: {},
@@ -2338,6 +2546,22 @@ function createInitialShopState(
           quantity: 1,
           customerName: '',
           priority: 'standard',
+        },
+        support: {
+          ticketId: 'TCK-NEW',
+          customerName: '',
+          issueType: '',
+          priority: 'normal',
+          state: 'new',
+          raised: false,
+          solved: false,
+          revoked: false,
+          stable: false,
+          ticketsRaised: 0,
+          solvedTickets: 0,
+          revokedTickets: 0,
+          stableTickets: 0,
+          undergoingTickets: 0,
         },
       }
 }
@@ -2610,19 +2834,22 @@ function CreateFunctionForm({
   const [open, setOpen] = useState(false)
   const isBlankRule = ruleType === 'blank'
   const isOrderRule = ruleType === 'order'
-  const [name, setName] = useState(isBlankRule ? 'My Step' : isOrderRule ? 'Order Function' : 'My Function')
+  const isSupportRule = ruleType === 'support'
+  const [name, setName] = useState(
+    isBlankRule ? 'My Step' : isOrderRule ? 'Order Function' : isSupportRule ? 'Support Function' : 'My Function',
+  )
   const [operation, setOperation] = useState<FunctionDef['operation']>(
-    isBlankRule ? 'view_stocks' : isOrderRule ? 'confirm_payment' : 'add_stock',
+    isBlankRule ? 'view_stocks' : isOrderRule ? 'confirm_payment' : isSupportRule ? 'raise_ticket' : 'add_stock',
   )
   const [icon, setIcon] = useState('')
   const [kind, setKind] = useState<'action' | 'condition'>('action')
   const [operationName, setOperationName] = useState(
-    isBlankRule ? 'custom_step_logic' : isOrderRule ? 'order_logic' : 'my_operation',
+    isBlankRule ? 'custom_step_logic' : isOrderRule ? 'order_logic' : isSupportRule ? 'support_logic' : 'my_operation',
   )
 
   const params = useMemo<FunctionParamDef[]>(() => {
     if (operation === 'view_stocks') return []
-    if (operation === 'confirm_payment' || operation === 'pack_order' || operation === 'dispatch_order' || operation === 'order_is_created' || operation === 'payment_is_confirmed' || operation === 'order_is_packed')
+    if (operation === 'confirm_payment' || operation === 'pack_order' || operation === 'dispatch_order' || operation === 'order_is_created' || operation === 'payment_is_confirmed' || operation === 'order_is_packed' || operation === 'ticket_is_raised' || operation === 'mark_ticket_undergoing' || operation === 'resolve_ticket' || operation === 'revoke_ticket' || operation === 'stabilize_ticket')
       return []
     if (operation === 'delete_sweet') return [{ key: 'sweetName', label: 'Sweet name', type: 'string', required: true }]
     if (operation === 'buy_sweet' || operation === 'add_stock')
@@ -2648,6 +2875,17 @@ function CreateFunctionForm({
       return [{ key: 'status', label: 'Status', type: 'string', required: true, placeholder: 'on_hold' }]
     if (operation === 'order_priority_is')
       return [{ key: 'priority', label: 'Priority', type: 'string', required: true, placeholder: 'express' }]
+    if (operation === 'raise_ticket')
+      return [
+        { key: 'ticketId', label: 'Ticket ID', type: 'string', required: true, placeholder: 'TCK-1001' },
+        { key: 'customerName', label: 'Customer', type: 'string', required: true, placeholder: 'Anita' },
+        { key: 'issueType', label: 'Issue type', type: 'string', required: true, placeholder: 'login_issue' },
+        { key: 'priority', label: 'Priority', type: 'string', required: true, placeholder: 'normal' },
+      ]
+    if (operation === 'update_support_state' || operation === 'support_state_is')
+      return [{ key: 'state', label: 'State', type: 'string', required: true, placeholder: 'open' }]
+    if (operation === 'raised_tickets_at_least' || operation === 'undergoing_tickets_at_least' || operation === 'solved_tickets_at_least' || operation === 'revoked_tickets_at_least' || operation === 'stable_tickets_at_least')
+      return [{ key: 'count', label: 'Minimum count', type: 'number', required: true, placeholder: '1' }]
     if (operation === 'stock_below' || operation === 'stock_above_or_equal')
       return [
         { key: 'sweetName', label: 'Sweet name', type: 'string', required: true },
@@ -2684,9 +2922,27 @@ function CreateFunctionForm({
       'order_is_packed',
       'order_priority_is',
     ]
+    const supportActions: FunctionDef['operation'][] = [
+      'raise_ticket',
+      'mark_ticket_undergoing',
+      'resolve_ticket',
+      'revoke_ticket',
+      'stabilize_ticket',
+      'update_support_state',
+    ]
+    const supportConditions: FunctionDef['operation'][] = [
+      'ticket_is_raised',
+      'support_state_is',
+      'raised_tickets_at_least',
+      'undergoing_tickets_at_least',
+      'solved_tickets_at_least',
+      'revoked_tickets_at_least',
+      'stable_tickets_at_least',
+    ]
     if (isOrderRule) return kind === 'action' ? orderActions : orderConditions
+    if (isSupportRule) return kind === 'action' ? supportActions : supportConditions
     return kind === 'action' ? actions : conditions
-  }, [isOrderRule, kind])
+  }, [isOrderRule, isSupportRule, kind])
 
   if (!open) {
     return (
@@ -2722,6 +2978,10 @@ function CreateFunctionForm({
                   ? nextKind === 'action'
                     ? (['create_order', 'confirm_payment', 'assign_shift', 'reserve_stock', 'pack_order', 'dispatch_order', 'update_order_status'] as const)
                     : (['order_is_created', 'payment_is_confirmed', 'order_stock_available', 'shift_is', 'order_is_packed', 'order_priority_is'] as const)
+                  : isSupportRule
+                    ? nextKind === 'action'
+                      ? (['raise_ticket', 'mark_ticket_undergoing', 'resolve_ticket', 'revoke_ticket', 'stabilize_ticket', 'update_support_state'] as const)
+                      : (['ticket_is_raised', 'support_state_is', 'raised_tickets_at_least', 'undergoing_tickets_at_least', 'solved_tickets_at_least', 'revoked_tickets_at_least', 'stable_tickets_at_least'] as const)
                   : nextKind === 'action'
                 ? (['buy_sweet', 'add_stock', 'delete_sweet', 'view_stocks'] as const)
                 : (['stock_below', 'stock_above_or_equal'] as const)
@@ -2771,6 +3031,12 @@ function CreateFunctionForm({
           {allowedOps.includes('pack_order') ? <option value="pack_order">Pack Order</option> : null}
           {allowedOps.includes('dispatch_order') ? <option value="dispatch_order">Dispatch Order</option> : null}
           {allowedOps.includes('update_order_status') ? <option value="update_order_status">Update Order Status</option> : null}
+          {allowedOps.includes('raise_ticket') ? <option value="raise_ticket">Raise Ticket</option> : null}
+          {allowedOps.includes('mark_ticket_undergoing') ? <option value="mark_ticket_undergoing">Mark Ticket Undergoing</option> : null}
+          {allowedOps.includes('resolve_ticket') ? <option value="resolve_ticket">Resolve Ticket</option> : null}
+          {allowedOps.includes('revoke_ticket') ? <option value="revoke_ticket">Revoke Ticket</option> : null}
+          {allowedOps.includes('stabilize_ticket') ? <option value="stabilize_ticket">Mark Stable</option> : null}
+          {allowedOps.includes('update_support_state') ? <option value="update_support_state">Update Support State</option> : null}
           {allowedOps.includes('stock_below') ? (
             <option value="stock_below">
               {isBlankRule ? 'Gate: value below threshold' : 'Stock Below'}
@@ -2787,6 +3053,13 @@ function CreateFunctionForm({
           {allowedOps.includes('shift_is') ? <option value="shift_is">Shift Assigned?</option> : null}
           {allowedOps.includes('order_is_packed') ? <option value="order_is_packed">Order Packed?</option> : null}
           {allowedOps.includes('order_priority_is') ? <option value="order_priority_is">Order Priority Is</option> : null}
+          {allowedOps.includes('ticket_is_raised') ? <option value="ticket_is_raised">Ticket Raised?</option> : null}
+          {allowedOps.includes('support_state_is') ? <option value="support_state_is">Support State Is</option> : null}
+          {allowedOps.includes('raised_tickets_at_least') ? <option value="raised_tickets_at_least">Raised Tickets At Least</option> : null}
+          {allowedOps.includes('undergoing_tickets_at_least') ? <option value="undergoing_tickets_at_least">Undergoing Tickets At Least</option> : null}
+          {allowedOps.includes('solved_tickets_at_least') ? <option value="solved_tickets_at_least">Solved Tickets At Least</option> : null}
+          {allowedOps.includes('revoked_tickets_at_least') ? <option value="revoked_tickets_at_least">Revoked Tickets At Least</option> : null}
+          {allowedOps.includes('stable_tickets_at_least') ? <option value="stable_tickets_at_least">Stable Tickets At Least</option> : null}
         </select>
       </label>
       <label className="formLabel">

@@ -20,5 +20,21 @@ export function createDefaultShopState(): ShopState {
       customerName: 'Walk-in Customer',
       priority: 'standard',
     },
+    support: {
+      ticketId: 'TCK-1001',
+      customerName: 'Anita',
+      issueType: 'login_issue',
+      priority: 'normal',
+      state: 'open',
+      raised: true,
+      solved: false,
+      revoked: false,
+      stable: false,
+      ticketsRaised: 12,
+      solvedTickets: 9,
+      revokedTickets: 1,
+      stableTickets: 7,
+      undergoingTickets: 2,
+    },
   }
 }

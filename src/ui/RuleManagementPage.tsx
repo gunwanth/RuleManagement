@@ -13,12 +13,14 @@ export function RuleManagementPage({
   onOpenRule,
   onDeleteRule,
   onCreateEligibilityRule,
+  onCreateSupportRule,
 }: {
   rules: RuleRecord[]
   metrics: MetricsByRuleId
   onOpenRule: (id: string) => void
   onDeleteRule: (id: string) => void
   onCreateEligibilityRule: () => void
+  onCreateSupportRule: () => void
 }) {
   return (
     <div className="pageRoot">
@@ -30,9 +32,14 @@ export function RuleManagementPage({
               All rules are isolated unless you connect nodes inside a rule.
             </div>
           </div>
-          <button className="btn" type="button" onClick={onCreateEligibilityRule}>
-            Add Eligibility Criteria Rule
-          </button>
+          <div className="labActions">
+            <button className="btn" type="button" onClick={onCreateEligibilityRule}>
+              Add Eligibility Criteria Rule
+            </button>
+            <button className="btn" type="button" onClick={onCreateSupportRule}>
+              Add CRM Support Rule
+            </button>
+          </div>
         </div>
       </div>
 

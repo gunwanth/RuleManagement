@@ -20,6 +20,11 @@ import {
   createOrderProcessingSeedWorkflow,
   createOrderProcessingTestCases,
 } from './rules/orderProcessingSeed'
+import {
+  createSupportSeedFunctions,
+  createSupportSeedWorkflow,
+  createSupportTestCases,
+} from './rules/supportSeed'
 import type { RuleType } from './rules/types'
 import { createDefaultEligibilityTestCases } from './eligibility/testCases'
 
@@ -51,7 +56,7 @@ function App() {
     setRules((prev) =>
       prev.map((r) => ({
         ...r,
-        type: (r as { type?: unknown }).type === 'sweetshop' || (r as { type?: unknown }).type === 'eligibility' || (r as { type?: unknown }).type === 'order' || (r as { type?: unknown }).type === 'blank'
+        type: (r as { type?: unknown }).type === 'sweetshop' || (r as { type?: unknown }).type === 'eligibility' || (r as { type?: unknown }).type === 'order' || (r as { type?: unknown }).type === 'support' || (r as { type?: unknown }).type === 'blank'
           ? ((r as { type?: unknown }).type as RuleType)
           : 'blank',
         functions: Array.isArray((r as { functions?: unknown }).functions)
@@ -107,7 +112,8 @@ function App() {
     const hasSweet = rules.some((r) => r.id === 'sweetshop_management')
     const hasElig = rules.some((r) => r.id === 'eligibility_criteria')
     const hasOrder = rules.some((r) => r.id === 'order_processing')
-    if (hasSweet && hasElig && hasOrder) return
+    const hasSupport = rules.some((r) => r.id === 'crm_support')
+    if (hasSweet && hasElig && hasOrder && hasSupport) return
     setRules((prev) => {
       const next = prev.slice()
       if (!hasSweet) {
@@ -139,6 +145,17 @@ function App() {
           workflow: createOrderProcessingSeedWorkflow(),
           functions: createOrderProcessingSeedFunctions(),
           shopTestCases: createOrderProcessingTestCases(),
+          updatedAt: now,
+        })
+      }
+      if (!hasSupport) {
+        next.unshift({
+          id: 'crm_support',
+          name: 'CRM Support Operations',
+          type: 'support',
+          workflow: createSupportSeedWorkflow(),
+          functions: createSupportSeedFunctions(),
+          shopTestCases: createSupportTestCases(),
           updatedAt: now,
         })
       }
@@ -281,6 +298,20 @@ function App() {
               workflow: createEligibilitySeedWorkflow(),
               functions: createEligibilitySeedFunctions(),
               eligibilityTestCases: createDefaultEligibilityTestCases(),
+              updatedAt: new Date().toISOString(),
+            }
+            setRules((prev) => [record, ...prev])
+            window.location.hash = `/rule/${encodeURIComponent(record.id)}`
+          }}
+          onCreateSupportRule={() => {
+            const id = crypto.randomUUID()
+            const record: RuleRecord = {
+              id,
+              name: 'CRM Support Operations',
+              type: 'support',
+              workflow: createSupportSeedWorkflow(),
+              functions: createSupportSeedFunctions(),
+              shopTestCases: createSupportTestCases(),
               updatedAt: new Date().toISOString(),
             }
             setRules((prev) => [record, ...prev])

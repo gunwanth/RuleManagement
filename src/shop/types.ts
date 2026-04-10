@@ -5,6 +5,15 @@ export type StockItem = {
 
 export type OrderShift = 'unassigned' | 'morning' | 'evening' | 'night'
 export type OrderPriority = 'standard' | 'express'
+export type SupportPriority = 'low' | 'normal' | 'high' | 'urgent'
+export type SupportStateStatus =
+  | 'new'
+  | 'open'
+  | 'undergoing'
+  | 'pending_customer'
+  | 'resolved'
+  | 'revoked'
+  | 'stable'
 
 export type OrderState = {
   orderId: string
@@ -20,9 +29,27 @@ export type OrderState = {
   priority: OrderPriority
 }
 
+export type SupportState = {
+  ticketId: string
+  customerName: string
+  issueType: string
+  priority: SupportPriority
+  state: SupportStateStatus
+  raised: boolean
+  solved: boolean
+  revoked: boolean
+  stable: boolean
+  ticketsRaised: number
+  solvedTickets: number
+  revokedTickets: number
+  stableTickets: number
+  undergoingTickets: number
+}
+
 export type ShopState = {
   items: Record<string, StockItem>
   order: OrderState
+  support: SupportState
 }
 
 export type ShopActionResult = {

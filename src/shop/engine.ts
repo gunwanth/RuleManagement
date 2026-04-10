@@ -16,6 +16,7 @@ function clone(state: ShopState): ShopState {
       Object.entries(state.items).map(([name, item]) => [name, { ...item }]),
     ),
     order: { ...state.order },
+    support: { ...state.support },
   }
 }
 
@@ -139,6 +140,113 @@ export function applyAction(
     return { ok: true, message: `Order status updated to ${status}`, next }
   }
 
+  if (fn.operation === 'raise_ticket') {
+    const ticketId = toString(params?.ticketId, next.support.ticketId || 'TCK-NEW')
+    const customerName = toString(params?.customerName, next.support.customerName || 'Customer')
+    const issueType = toString(params?.issueType, next.support.issueType || 'support_request')
+    const priority = toString(params?.priority, next.support.priority)
+    const wasRaised = next.support.raised
+
+    next.support = {
+      ...next.support,
+      ticketId,
+      customerName,
+      issueType,
+      priority:
+        priority === 'low' || priority === 'high' || priority === 'urgent' ? priority : 'normal',
+      state: 'open',
+      raised: true,
+      solved: false,
+      revoked: false,
+      stable: false,
+      ticketsRaised: next.support.ticketsRaised + (wasRaised ? 0 : 1),
+    }
+    return { ok: true, message: `Raised ticket ${ticketId}`, next }
+  }
+
+  if (fn.operation === 'mark_ticket_undergoing') {
+    if (!next.support.raised) {
+      return { ok: false, message: 'Cannot mark undergoing before ticket is raised', next }
+    }
+
+    const wasUndergoing = next.support.state === 'undergoing'
+    next.support = {
+      ...next.support,
+      state: 'undergoing',
+      undergoingTickets: next.support.undergoingTickets + (wasUndergoing ? 0 : 1),
+    }
+    return { ok: true, message: 'Ticket moved to undergoing state', next }
+  }
+
+  if (fn.operation === 'resolve_ticket') {
+    if (!next.support.raised) {
+      return { ok: false, message: 'Cannot resolve before ticket is raised', next }
+    }
+
+    const wasSolved = next.support.solved
+    const nextUndergoing =
+      next.support.state === 'undergoing'
+        ? Math.max(0, next.support.undergoingTickets - 1)
+        : next.support.undergoingTickets
+
+    next.support = {
+      ...next.support,
+      state: 'resolved',
+      solved: true,
+      revoked: false,
+      stable: false,
+      undergoingTickets: nextUndergoing,
+      solvedTickets: next.support.solvedTickets + (wasSolved ? 0 : 1),
+    }
+    return { ok: true, message: `Resolved ticket ${next.support.ticketId}`, next }
+  }
+
+  if (fn.operation === 'revoke_ticket') {
+    if (!next.support.raised) {
+      return { ok: false, message: 'Cannot revoke before ticket is raised', next }
+    }
+
+    const wasRevoked = next.support.revoked
+    const nextUndergoing =
+      next.support.state === 'undergoing'
+        ? Math.max(0, next.support.undergoingTickets - 1)
+        : next.support.undergoingTickets
+
+    next.support = {
+      ...next.support,
+      state: 'revoked',
+      revoked: true,
+      solved: false,
+      stable: false,
+      undergoingTickets: nextUndergoing,
+      revokedTickets: next.support.revokedTickets + (wasRevoked ? 0 : 1),
+    }
+    return { ok: true, message: `Revoked ticket ${next.support.ticketId}`, next }
+  }
+
+  if (fn.operation === 'stabilize_ticket') {
+    if (!next.support.solved) {
+      return { ok: false, message: 'Cannot stabilize before ticket is solved', next }
+    }
+
+    const wasStable = next.support.stable
+    next.support = {
+      ...next.support,
+      state: 'stable',
+      stable: true,
+      stableTickets: next.support.stableTickets + (wasStable ? 0 : 1),
+    }
+    return { ok: true, message: `Ticket ${next.support.ticketId} marked stable`, next }
+  }
+
+  if (fn.operation === 'update_support_state') {
+    const state = toString(params?.state, next.support.state)
+    const allowed = ['new', 'open', 'undergoing', 'pending_customer', 'resolved', 'revoked', 'stable']
+    const nextState = allowed.includes(state) ? state : next.support.state
+    next.support.state = nextState as ShopState['support']['state']
+    return { ok: true, message: `Support state updated to ${nextState}`, next }
+  }
+
   return { ok: false, message: `Unsupported action: ${fn.operation}`, next }
 }
 
@@ -210,6 +318,46 @@ export function evaluateCondition(
     const priority = toString(params?.priority, 'standard')
     const value = state.order.priority === priority
     return { ok: true, value, message: `Priority ${state.order.priority} is ${priority} -> ${value}` }
+  }
+
+  if (fn.operation === 'ticket_is_raised') {
+    return { ok: true, value: nextBool(state.support.raised), message: `Ticket raised -> ${state.support.raised}` }
+  }
+
+  if (fn.operation === 'support_state_is') {
+    const expected = toString(params?.state, 'open')
+    const value = state.support.state === expected
+    return { ok: true, value, message: `Support state ${state.support.state} is ${expected} -> ${value}` }
+  }
+
+  if (fn.operation === 'raised_tickets_at_least') {
+    const min = Math.max(0, Math.floor(toNumber(params?.count, 0)))
+    const value = state.support.ticketsRaised >= min
+    return { ok: true, value, message: `Raised tickets ${state.support.ticketsRaised} >= ${min} -> ${value}` }
+  }
+
+  if (fn.operation === 'undergoing_tickets_at_least') {
+    const min = Math.max(0, Math.floor(toNumber(params?.count, 0)))
+    const value = state.support.undergoingTickets >= min
+    return { ok: true, value, message: `Undergoing tickets ${state.support.undergoingTickets} >= ${min} -> ${value}` }
+  }
+
+  if (fn.operation === 'solved_tickets_at_least') {
+    const min = Math.max(0, Math.floor(toNumber(params?.count, 0)))
+    const value = state.support.solvedTickets >= min
+    return { ok: true, value, message: `Solved tickets ${state.support.solvedTickets} >= ${min} -> ${value}` }
+  }
+
+  if (fn.operation === 'revoked_tickets_at_least') {
+    const min = Math.max(0, Math.floor(toNumber(params?.count, 0)))
+    const value = state.support.revokedTickets >= min
+    return { ok: true, value, message: `Revoked tickets ${state.support.revokedTickets} >= ${min} -> ${value}` }
+  }
+
+  if (fn.operation === 'stable_tickets_at_least') {
+    const min = Math.max(0, Math.floor(toNumber(params?.count, 0)))
+    const value = state.support.stableTickets >= min
+    return { ok: true, value, message: `Stable tickets ${state.support.stableTickets} >= ${min} -> ${value}` }
   }
 
   return { ok: true, value: false, message: `Unsupported condition: ${fn.operation}` }
