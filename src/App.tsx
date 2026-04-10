@@ -222,6 +222,7 @@ function App() {
         ruleId={activeRuleId}
         ruleType={builderRuleType}
         initial={workflow}
+        initialRuleName={activeRuleId ? (rules.find((r) => r.id === activeRuleId)?.name ?? undefined) : undefined}
         initialFunctions={builderFunctions}
         initialEligibilityTestCases={
           builderRuleType === 'eligibility' && activeRuleId

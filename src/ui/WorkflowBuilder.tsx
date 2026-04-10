@@ -49,6 +49,7 @@ type WorkflowBuilderProps = {
   ruleId: string | null
   ruleType: import('../rules/types').RuleType
   initial: WorkflowState
+  initialRuleName?: string
   initialFunctions: FunctionDef[]
   initialEligibilityTestCases?: EligibilityTestCase[]
   initialShopTestCases?: ShopTestCase[]
@@ -86,6 +87,7 @@ function downloadJson(filename: string, json: string) {
 export function WorkflowBuilder({
   ruleId,
   initial,
+  initialRuleName,
   initialFunctions,
   ruleType,
   initialEligibilityTestCases,
@@ -105,7 +107,7 @@ export function WorkflowBuilder({
   const [edges, setEdges, onEdgesChange] = useEdgesState(initial.edges)
 
   const [ruleName, setRuleName] = useState(() =>
-    initial.edges.length ? 'Buy Sweet Rule' : 'New Rule',
+    (initialRuleName && initialRuleName.trim().length ? initialRuleName : (initial.edges.length ? 'New Rule' : 'New Rule'))
   )
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [hoveredEdgeId, setHoveredEdgeId] = useState<string | null>(null)
@@ -358,7 +360,6 @@ export function WorkflowBuilder({
     setCaseResults({})
     if (opts?.functions) setFunctions(opts.functions)
     if (opts?.resetUi) {
-      setRuleName(next.edges.length ? 'Buy Sweet Rule' : 'New Rule')
       setOpenFunctions(false)
       setOpenInspector(false)
       setOpenStocks(false)
