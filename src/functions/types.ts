@@ -58,4 +58,8 @@ export type FunctionDef = {
     | 'candidate_degree_is'
     | 'candidate_cgpa_at_least'
     | 'candidate_has_skill'
+    | 'transaction_amount_gt'
+    | 'budget_check'
+    | 'alert_level_is'
+    | 'transaction_location_is'
 }

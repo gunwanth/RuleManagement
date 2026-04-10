@@ -8,10 +8,11 @@ import type { RuleRecord } from './rules/types'
 import { deleteRule, upsertRule } from './rules/ruleStore'
 import type { MetricsByRuleId } from './analytics/types'
 import { normalizeMetricsCollection, recordRuleRun } from './analytics/metrics'
-import { TopNav, type TopNavPage } from './ui/TopNav'
+import { Sidebar, type SidebarPage } from './ui/Sidebar'
 import { DashboardOverview } from './ui/DashboardOverview'
 import { RuleManagementPage } from './ui/RuleManagementPage'
 import { FlowLabPage } from './ui/FlowLabPage'
+import { AnalyticsPage } from './ui/AnalyticsPage'
 import type { FunctionDef } from './functions/types'
 import { createSweetShopSeedFunctions, createSweetShopSeedWorkflow } from './rules/seed'
 import { createEligibilitySeedFunctions, createEligibilitySeedWorkflow } from './rules/eligibilitySeed'
@@ -27,10 +28,20 @@ import {
 } from './rules/supportSeed'
 import type { RuleType } from './rules/types'
 import { createDefaultEligibilityTestCases } from './eligibility/testCases'
+import { RULE_TEMPLATES, SYSTEM_RULE_TEMPLATES } from './rules/templatesSeed'
+
+function Card({ title, children }: { title?: string; children: React.ReactNode }) {
+  return (
+    <div className="card">
+      {title && <div className="cardTitle">{title}</div>}
+      {children}
+    </div>
+  )
+}
 
 function App() {
   const [view, setView] = useState<'shell' | 'builder'>('shell')
-  const [page, setPage] = useState<TopNavPage>('dashboard')
+  const [page, setPage] = useState<SidebarPage>('dashboard')
   const [workflow, setWorkflow] = useState<WorkflowState>(() =>
     createBlankWorkflow(),
   )
@@ -204,9 +215,12 @@ function App() {
         return
       }
 
-      if (hash === '/rules' || hash === '/flowlab' || hash === '/dashboard') {
+      const validPages: SidebarPage[] = ['dashboard', 'builder', 'analytics', 'templates', 'history', 'settings']
+      const pageMatch = validPages.find(p => hash === `/${p}`)
+      
+      if (pageMatch || hash === '/rules' || hash === '/flowlab') {
         setView('shell')
-        setPage(hash.slice(1) as TopNavPage)
+        setPage(pageMatch || (hash === '/flowlab' ? 'simulation' : 'dashboard'))
       }
     }
 
@@ -274,83 +288,216 @@ function App() {
   }
 
   return (
-    <div style={{ height: '100%' }}>
-      <TopNav
+    <div style={{ height: '100%', display: 'flex' }}>
+      <Sidebar
         page={page}
         onNavigate={(nextPage) => {
+          if (nextPage === 'builder') {
+            createNewRule()
+            return
+          }
           setPage(nextPage)
           setView('shell')
           window.location.hash = `/${nextPage}`
         }}
         onCreateNewRule={createNewRule}
       />
-      {page === 'dashboard' ? <DashboardOverview rules={rules} metrics={metrics} /> : null}
-      {page === 'rules' ? (
-        <RuleManagementPage
-          rules={rules}
-          metrics={metrics}
-          onOpenRule={openRule}
-          onCreateEligibilityRule={() => {
-            const id = crypto.randomUUID()
-            const record: RuleRecord = {
-              id,
-              name: 'Eligibility Criteria',
-              type: 'eligibility',
-              workflow: createEligibilitySeedWorkflow(),
-              functions: createEligibilitySeedFunctions(),
-              eligibilityTestCases: createDefaultEligibilityTestCases(),
-              updatedAt: new Date().toISOString(),
+      <main style={{ flex: 1, overflowY: 'auto' }}>
+        {page === 'dashboard' ? (
+          <DashboardOverview 
+            rules={rules} 
+            metrics={metrics} 
+            onOpenRule={openRule} 
+            onCreateNewRule={createNewRule} 
+            onViewDetailedReport={() => {
+              setPage('analytics')
+              window.location.hash = '/analytics'
+            }}
+          />
+        ) : null}
+        {page === 'builder' ? (
+          <RuleManagementPage
+            rules={rules}
+            metrics={metrics}
+            onOpenRule={openRule}
+            onOpenTemplate={(type) => {
+              const template = RULE_TEMPLATES.find(t => t.type === type)
+              if (!template) return
+              const newRule: RuleRecord = {
+                ...template,
+                id: crypto.randomUUID(),
+                name: `My ${template.name}`,
+                updatedAt: new Date().toISOString(),
+              }
+              setRules((prev) => [newRule, ...prev])
+              window.location.hash = `/rule/${encodeURIComponent(newRule.id)}`
+            }}
+            onCreateEligibilityRule={() => {
+              const id = crypto.randomUUID()
+              const record: RuleRecord = {
+                id,
+                name: 'Eligibility Criteria',
+                type: 'eligibility',
+                workflow: createEligibilitySeedWorkflow(),
+                functions: createEligibilitySeedFunctions(),
+                eligibilityTestCases: createDefaultEligibilityTestCases(),
+                updatedAt: new Date().toISOString(),
+              }
+              setRules((prev) => [record, ...prev])
+              window.location.hash = `/rule/${encodeURIComponent(record.id)}`
+            }}
+            onCreateSupportRule={() => {
+              const id = crypto.randomUUID()
+              const record: RuleRecord = {
+                id,
+                name: 'CRM Support Operations',
+                type: 'support',
+                workflow: createSupportSeedWorkflow(),
+                functions: createSupportSeedFunctions(),
+                shopTestCases: createSupportTestCases(),
+                updatedAt: new Date().toISOString(),
+              }
+              setRules((prev) => [record, ...prev])
+              window.location.hash = `/rule/${encodeURIComponent(record.id)}`
+            }}
+            onDeleteRule={(id) => {
+              setRules((prev) => deleteRule(prev, id))
+              setMetrics((prev) => {
+                const copy = { ...prev }
+                delete copy[id]
+                return copy
+              })
+            }}
+          />
+        ) : null}
+        {page === 'simulation' ? (
+          <FlowLabPage
+            rules={rules.filter(r => !r.name.includes('Template') && !r.id.includes('template'))}
+            metrics={metrics}
+            onOpenRule={openRule}
+            onUpdateRule={(next) =>
+              setRules((prev) =>
+                upsertRule(prev, {
+                  id: next.id,
+                  name: next.name,
+                  type: next.type,
+                  workflow: next.workflow,
+                  functions: next.functions,
+                  eligibilityTestCases: next.eligibilityTestCases,
+                  shopTestCases: next.shopTestCases,
+                }),
+              )
             }
-            setRules((prev) => [record, ...prev])
-            window.location.hash = `/rule/${encodeURIComponent(record.id)}`
-          }}
-          onCreateSupportRule={() => {
-            const id = crypto.randomUUID()
-            const record: RuleRecord = {
-              id,
-              name: 'CRM Support Operations',
-              type: 'support',
-              workflow: createSupportSeedWorkflow(),
-              functions: createSupportSeedFunctions(),
-              shopTestCases: createSupportTestCases(),
-              updatedAt: new Date().toISOString(),
+            onRunRecorded={({ ruleId, ok, outcome, stream }) =>
+              setMetrics((prev) => recordRuleRun(prev, { ruleId, ok, outcome, stream }))
             }
-            setRules((prev) => [record, ...prev])
-            window.location.hash = `/rule/${encodeURIComponent(record.id)}`
-          }}
-          onDeleteRule={(id) => {
-            setRules((prev) => deleteRule(prev, id))
-            setMetrics((prev) => {
-              const copy = { ...prev }
-              delete copy[id]
-              return copy
-            })
-          }}
-        />
-      ) : null}
-      {page === 'flowlab' ? (
-        <FlowLabPage
-          rules={rules}
-          metrics={metrics}
-          onOpenRule={openRule}
-          onUpdateRule={(next) =>
-            setRules((prev) =>
-              upsertRule(prev, {
-                id: next.id,
-                name: next.name,
-                type: next.type,
-                workflow: next.workflow,
-                functions: next.functions,
-                eligibilityTestCases: next.eligibilityTestCases,
-                shopTestCases: next.shopTestCases,
-              }),
-            )
-          }
-          onRunRecorded={({ ruleId, ok, outcome, stream }) =>
-            setMetrics((prev) => recordRuleRun(prev, { ruleId, ok, outcome, stream }))
-          }
-        />
-      ) : null}
+          />
+        ) : null}
+        {page === 'analytics' && (
+          <AnalyticsPage rules={rules} metrics={metrics} />
+        )}
+        {page === 'templates' && (
+          <RuleManagementPage
+            isTemplatesView
+            rules={rules}
+            templates={RULE_TEMPLATES}
+            metrics={metrics}
+            onOpenRule={openRule}
+            onOpenTemplate={(type) => {
+              const template = [...RULE_TEMPLATES, ...SYSTEM_RULE_TEMPLATES].find(t => t.type === type)
+              if (!template) return
+              const newRule: RuleRecord = {
+                ...template,
+                id: crypto.randomUUID(),
+                name: `My ${template.name}`,
+                updatedAt: new Date().toISOString(),
+              }
+              setRules((prev) => [newRule, ...prev])
+              window.location.hash = `/rule/${encodeURIComponent(newRule.id)}`
+            }}
+            onCreateEligibilityRule={() => {}}
+            onCreateSupportRule={() => {}}
+            onDeleteRule={() => {}}
+          />
+        )}
+        {page === 'history' && (
+          <div className="pageRoot">
+            <div className="pageHeader">
+              <div className="pageTitle">Transaction History</div>
+              <div className="pageKicker">Detailed log of recent rule executions and outcomes.</div>
+            </div>
+            <div style={{ display: 'grid', gap: '12px' }}>
+              {Object.entries(metrics).flatMap(([ruleId, m]) => {
+                const ruleName = rules.find(r => r.id === ruleId)?.name || 'Unknown Rule';
+                const events = m.history || [];
+                return events.map((event, i) => (
+                  <div key={`${ruleId}-${i}`} className="card" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'grid', gap: '4px' }}>
+                      <div style={{ fontWeight: 900, fontSize: '14px' }}>{ruleName}</div>
+                      <div style={{ fontSize: '12px', color: 'rgba(17, 24, 39, 0.5)' }}>
+                        {new Date(event.ts).toLocaleString()}
+                      </div>
+                    </div>
+                    <div className={`pill ${event.ok ? 'sparkGood' : 'sparkBad'}`} style={{ color: event.ok ? '#16a34a' : '#dc2626', background: event.ok ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)', border: 'none' }}>
+                      {event.ok ? 'SUCCESS' : 'FAILED'}
+                    </div>
+                  </div>
+                ));
+              }).length > 0 ? (
+                Object.entries(metrics).flatMap(([ruleId, m]) => {
+                  const ruleName = rules.find(r => r.id === ruleId)?.name || 'Unknown Rule';
+                  const events = m.history || [];
+                  return events.map((event, i) => (
+                    <div key={`${ruleId}-${i}`} className="card" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'grid', gap: '4px' }}>
+                        <div style={{ fontWeight: 900, fontSize: '14px' }}>{ruleName}</div>
+                        <div style={{ fontSize: '12px', color: 'rgba(17, 24, 39, 0.5)' }}>
+                          {new Date(event.ts).toLocaleString()}
+                        </div>
+                      </div>
+                      <div className={`pill`} style={{ fontWeight: 900, fontSize: '11px', color: event.ok ? '#16a34a' : '#dc2626', background: event.ok ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)', border: 'none' }}>
+                        {event.ok ? 'SUCCESS' : 'FAILED'}
+                      </div>
+                    </div>
+                  ));
+                }).sort((a, b) => {
+                  const tsA = new Date(a.props.children[0].props.children[1].props.children).getTime();
+                  const tsB = new Date(b.props.children[0].props.children[1].props.children).getTime();
+                  return tsB - tsA;
+                })
+              ) : (
+                <Card>
+                  <div className="emptyNote">Transaction logging is active. History will appear as rules are executed.</div>
+                </Card>
+              )}
+            </div>
+          </div>
+        )}
+        {page === 'settings' && (
+          <div className="pageRoot">
+            <div className="pageHeader">
+              <div className="pageTitle">Settings</div>
+              <div className="pageKicker">Configure platform preferences and environment settings.</div>
+            </div>
+            <div className="grid2">
+              <Card title="Environment">
+                <div className="formLabel">Default Rule Workspace</div>
+                <input className="formInput" defaultValue="Enterprise Cloud" />
+              </Card>
+              <Card title="Notifications">
+                <div className="skillGrid">
+                  <label className="skillPill">
+                    <input type="checkbox" defaultChecked /> Alert on Rule Failure
+                  </label>
+                  <label className="skillPill">
+                    <input type="checkbox" /> Daily Analytics Digest
+                  </label>
+                </div>
+              </Card>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   )
 }

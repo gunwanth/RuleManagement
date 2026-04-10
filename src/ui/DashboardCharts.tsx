@@ -39,14 +39,11 @@ export function MetricsUsageBarChart({
   return (
     <div className="usageBars">
       {points.map((point) => {
-        const fail = Math.max(0, point.total - point.ok)
-        const okHeight = point.ok > 0 ? Math.max(10, (point.ok / maxTotal) * 240) : 0
-        const failHeight = fail > 0 ? Math.max(10, (fail / maxTotal) * 240) : 0
+        const totalHeight = point.total > 0 ? Math.max(10, (point.total / maxTotal) * 240) : 0
         return (
           <div key={point.day} className="usageBarGroup">
             <div className="usageBarPair">
-              <div className="usageBar usageBarGood" style={{ height: `${okHeight}px` }} />
-              <div className="usageBar usageBarBad" style={{ height: `${failHeight}px` }} />
+              <div className="usageBar" style={{ height: `${totalHeight}px`, background: '#f59e0b', borderRadius: '4px' }} />
             </div>
             <div className="usageBarLabel">{formatMonthLabel(point.day)}</div>
           </div>

@@ -14,6 +14,9 @@ export function RuleManagementPage({
   onDeleteRule,
   onCreateEligibilityRule,
   onCreateSupportRule,
+  onOpenTemplate,
+  isTemplatesView = false,
+  templates = [],
 }: {
   rules: RuleRecord[]
   metrics: MetricsByRuleId
@@ -21,131 +24,216 @@ export function RuleManagementPage({
   onDeleteRule: (id: string) => void
   onCreateEligibilityRule: () => void
   onCreateSupportRule: () => void
+  onOpenTemplate?: (type: string) => void
+  isTemplatesView?: boolean
+  templates?: RuleRecord[]
 }) {
+  const categories = [
+    { id: 'fraud', name: 'Fraud Detection', icon: '🛡️' },
+    { id: 'finance', name: 'Finance Management', icon: '💰' },
+    { id: 'alerts', name: 'Alerts & Notifications', icon: '🔔' },
+    { id: 'transactions', name: 'Transactions', icon: '💳' },
+    { id: 'sweetshop', name: 'Sweet Shop', icon: '🍬' },
+    { id: 'eligibility', name: 'Eligibility', icon: '✅' },
+    { id: 'order', name: 'Order Processing', icon: '📦' },
+    { id: 'support', name: 'CRM Support', icon: '🎧' },
+  ]
+
   return (
     <div className="pageRoot">
       <div className="pageHeader">
         <div className="pageHeaderRow">
           <div>
-            <div className="pageTitle">Rule Management</div>
+            <div className="pageTitle">{isTemplatesView ? 'Rule Templates' : 'Rule Management'}</div>
             <div className="pageKicker">
-              All rules are isolated unless you connect nodes inside a rule.
+              {isTemplatesView 
+                ? 'Quickly start with pre-built rule structures for common use cases.' 
+                : 'All rules are isolated unless you connect nodes inside a rule.'}
             </div>
           </div>
-          <div className="labActions">
-            <button className="btn" type="button" onClick={onCreateEligibilityRule}>
-              Add Eligibility Criteria Rule
-            </button>
-            <button className="btn" type="button" onClick={onCreateSupportRule}>
-              Add CRM Support Rule
-            </button>
-          </div>
+          {!isTemplatesView && (
+            <div className="labActions">
+              <button className="btn" type="button" onClick={onCreateEligibilityRule}>
+                Add Eligibility Criteria Rule
+              </button>
+              <button className="btn" type="button" onClick={onCreateSupportRule}>
+                Add CRM Support Rule
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="ruleGrid">
-        {rules.map((r) => {
-          const m = getRuleMetrics(metrics, r.id)
-          const isEligibility = r.type === 'eligibility'
-          const streamEntries = Object.entries(m.screenedByStream ?? {})
-            .sort((a, b) => (b[1].pass + b[1].fail) - (a[1].pass + a[1].fail))
-            .slice(0, 4)
-          const baseTotal = isEligibility
-            ? (m.screenedPass ?? 0) + (m.screenedFail ?? 0)
-            : m.totalRuns
-          const pct = baseTotal
-            ? Math.round(
-                ((isEligibility ? (m.screenedPass ?? 0) : m.successRuns) /
-                  baseTotal) *
-                  100,
-              )
-            : 0
-          return (
-            <div key={r.id} className="ruleCard">
-              <div className="ruleCardTop">
-                <div className="ruleCardName">{r.name}</div>
-                <div className="pill">
-                  {isEligibility ? `${baseTotal} screenings` : `${m.totalRuns} runs`}
-                </div>
-              </div>
-              <div className="ruleCardMeta">
-                {r.workflow.nodes.length} nodes - {r.workflow.edges.length} connections
-              </div>
-
-              <div className="ruleCardChart">
-                <div className="chartLabelRow">
-                  <div>{isEligibility ? 'Screened pass' : 'Success'}</div>
-                  <div>{pct}%</div>
-                </div>
-                <div className="progress">
-                  <div className="progressFill" style={{ width: `${pct}%` }} />
-                </div>
-                <div className="spark">
-                  {(isEligibility
-                    ? ((m.screenedHistory?.length
-                        ? m.screenedHistory
-                        : [{ ts: '', pass: true }]) as SparkItem[])
-                    : ((m.history.length
-                        ? m.history
-                        : [{ ts: '', ok: true }]) as SparkItem[]))
-                    .slice(0, 16)
-                    .map((e, i) => (
-                      <div
-                        key={i}
-                        className={`sparkDot ${
-                          ('pass' in e ? e.pass : e.ok)
-                            ? 'sparkGood'
-                            : 'sparkBad'
-                        }`}
-                        title={('pass' in e ? e.pass : e.ok) ? 'Pass' : 'Fail'}
-                      />
-                    ))}
-                </div>
-
-                <RuleMiniTrend
-                  points={buildDailyTrend(
-                    isEligibility
-                      ? (m.screenedHistory ?? []).map((e) => ({ ts: e.ts, ok: e.pass }))
-                      : m.history.map((e) => ({ ts: e.ts, ok: e.ok })),
-                    10,
-                  )}
-                />
-
-                {isEligibility && streamEntries.length ? (
-                  <div className="streamBreakdown">
-                    {streamEntries.map(([stream, v]) => (
-                      <div
-                        key={stream}
-                        className="streamRow"
-                        title={`${stream}: ${v.pass} pass, ${v.fail} fail`}
-                      >
-                        <div className="streamName">{stream}</div>
-                        <div className="streamCounts">
-                          <span className="streamPass">{v.pass}</span>
-                          <span className="streamSep">/</span>
-                          <span className="streamFail">{v.fail}</span>
-                        </div>
-                      </div>
-                    ))}
+      {isTemplatesView && (
+        <>
+          <div className="pageHeader" style={{ marginTop: '32px' }}>
+            <div className="pageTitle" style={{ fontSize: '18px' }}>Current Active Rules</div>
+            <div className="pageKicker">Your actual production rules.</div>
+          </div>
+          <div className="ruleGrid" style={{ marginBottom: '40px' }}>
+            {rules.map((r) => {
+              const m = getRuleMetrics(metrics, r.id)
+              const isEligibility = r.type === 'eligibility'
+              const baseTotal = isEligibility ? (m.screenedPass ?? 0) + (m.screenedFail ?? 0) : m.totalRuns
+              const pct = baseTotal ? Math.round(((isEligibility ? (m.screenedPass ?? 0) : m.successRuns) / baseTotal) * 100) : 0
+              
+              return (
+                <div key={r.id} className="ruleCard">
+                  <div className="ruleCardTop">
+                    <div className="ruleCardName">{r.name}</div>
+                    <div className="pill">{isEligibility ? `${baseTotal} screenings` : `${m.totalRuns} runs`}</div>
                   </div>
-                ) : null}
-              </div>
+                  <div className="ruleCardMeta">{r.workflow.nodes.length} nodes - {r.workflow.edges.length} connections</div>
+                  <div className="ruleCardChart">
+                    <div className="chartLabelRow">
+                      <div>{isEligibility ? 'Screened pass' : 'Success'}</div>
+                      <div>{pct}%</div>
+                    </div>
+                    <div className="progress">
+                      <div className="progressFill" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                  <div className="ruleCardActions">
+                    <button className="btn btnPrimary" onClick={() => onOpenRule(r.id)} type="button">Open Builder</button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
 
-              <div className="ruleCardActions">
-                <button className="btn btnPrimary" onClick={() => onOpenRule(r.id)} type="button">
-                  Open
-                </button>
-                <button className="btn btnDanger" onClick={() => onDeleteRule(r.id)} type="button">
-                  Delete
-                </button>
+          <div className="pageHeader">
+            <div className="pageTitle" style={{ fontSize: '18px' }}>Available Templates</div>
+            <div className="pageKicker">Pre-configured templates to build new rules.</div>
+          </div>
+          <div className="templateCategories" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '18px', marginBottom: '24px' }}>
+            {templates.map(template => {
+              const category = categories.find(c => c.id === template.type) || { icon: '📄', name: template.name };
+              return (
+                <div key={template.id} className="ruleCard" style={{ cursor: 'pointer' }} onClick={() => onOpenTemplate?.(template.type)}>
+                  <div className="ruleCardTop">
+                    <div className="ruleCardName" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '24px' }}>{category.icon}</span>
+                      {template.name}
+                    </div>
+                  </div>
+                  <div className="ruleCardMeta">
+                    Click to open {template.name} rule builder with pre-configured flows and functions.
+                  </div>
+                  <div className="ruleCardActions" style={{ marginTop: '12px' }}>
+                    <button className="btn btnPrimary" type="button">Use Template</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {!isTemplatesView && (
+        <div className="ruleGrid">
+          {rules.map((r) => {
+            const m = getRuleMetrics(metrics, r.id)
+            const isEligibility = r.type === 'eligibility'
+            const streamEntries = Object.entries(m.screenedByStream ?? {})
+              .sort((a, b) => (b[1].pass + b[1].fail) - (a[1].pass + a[1].fail))
+              .slice(0, 4)
+            const baseTotal = isEligibility
+              ? (m.screenedPass ?? 0) + (m.screenedFail ?? 0)
+              : m.totalRuns
+            const pct = baseTotal
+              ? Math.round(
+                  ((isEligibility ? (m.screenedPass ?? 0) : m.successRuns) /
+                    baseTotal) *
+                    100,
+                )
+              : 0
+            return (
+              <div key={r.id} className="ruleCard">
+                <div className="ruleCardTop">
+                  <div className="ruleCardName">{r.name}</div>
+                  <div className="pill">
+                    {isEligibility ? `${baseTotal} screenings` : `${m.totalRuns} runs`}
+                  </div>
+                </div>
+                <div className="ruleCardMeta">
+                  {r.workflow.nodes.length} nodes - {r.workflow.edges.length} connections
+                </div>
+
+                <div className="ruleCardChart">
+                  <div className="chartLabelRow">
+                    <div>{isEligibility ? 'Screened pass' : 'Success'}</div>
+                    <div>{pct}%</div>
+                  </div>
+                  <div className="progress">
+                    <div className="progressFill" style={{ width: `${pct}%` }} />
+                  </div>
+                  <div className="spark">
+                    {(isEligibility
+                      ? ((m.screenedHistory?.length
+                          ? m.screenedHistory
+                          : [{ ts: '', pass: true }]) as SparkItem[])
+                      : ((m.history.length
+                          ? m.history
+                          : [{ ts: '', ok: true }]) as SparkItem[]))
+                      .slice(0, 16)
+                      .map((e, i) => (
+                        <div
+                          key={i}
+                          className={`sparkDot ${
+                            ('pass' in e ? e.pass : e.ok)
+                              ? 'sparkGood'
+                              : 'sparkBad'
+                          }`}
+                          title={('pass' in e ? e.pass : e.ok) ? 'Pass' : 'Fail'}
+                        />
+                      ))}
+                  </div>
+
+                  <RuleMiniTrend
+                    points={buildDailyTrend(
+                      isEligibility
+                        ? (m.screenedHistory ?? []).map((e) => ({ ts: e.ts, ok: e.pass }))
+                        : m.history.map((e) => ({ ts: e.ts, ok: e.ok })),
+                      10,
+                    )}
+                  />
+
+                  {isEligibility && streamEntries.length ? (
+                    <div className="streamBreakdown">
+                      {streamEntries.map(([stream, v]) => (
+                        <div
+                          key={stream}
+                          className="streamRow"
+                          title={`${stream}: ${v.pass} pass, ${v.fail} fail`}
+                        >
+                          <div className="streamName">{stream}</div>
+                          <div className="streamCounts">
+                            <span className="streamPass">{v.pass}</span>
+                            <span className="streamSep">/</span>
+                            <span className="streamFail">{v.fail}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="ruleCardActions">
+                  <button className="btn btnPrimary" onClick={() => onOpenRule(r.id)} type="button">
+                    Open
+                  </button>
+                  <button className="btn btnDanger" onClick={() => onDeleteRule(r.id)} type="button">
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          )
-        })}
-        {rules.length === 0 ? (
-          <div className="emptyNote">No rules yet. Click “Create New Rule” to start.</div>
-        ) : null}
-      </div>
+            )
+          })}
+          {rules.length === 0 && (
+            <div className="emptyNote">No rules yet. Click “Create New Rule” to start.</div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

@@ -2,7 +2,7 @@ import type { WorkflowState } from '../workflow/types'
 import type { FunctionDef } from '../functions/types'
 import type { ShopState } from '../shop/types'
 
-export type RuleType = 'sweetshop' | 'eligibility' | 'order' | 'support' | 'blank'
+export type RuleType = 'sweetshop' | 'eligibility' | 'order' | 'support' | 'fraud' | 'finance' | 'alerts' | 'transactions' | 'blank'
 
 export type EligibilityTestCase = {
   id: string

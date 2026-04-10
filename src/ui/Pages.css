@@ -983,6 +983,221 @@
   min-width: 0;
 }
 
+.dashboardMainGrid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.dashboardLeftCol, .dashboardRightCol {
+  display: grid;
+  gap: 24px;
+}
+
+.metricCardBody {
+  padding: 10px 0;
+}
+
+.metricCardLabel {
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.4);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.metricCardValue {
+  font-size: 72px;
+  font-weight: 950;
+  color: #6366f1;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.metricCardSub {
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.7);
+  margin: 12px 0 8px;
+}
+
+.metricCardDesc {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.5);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.metricCardLink {
+  background: transparent;
+  border: none;
+  color: #6366f1;
+  font-weight: 900;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sideMetricRow {
+  display: grid;
+  gap: 8px;
+}
+
+.sideMetricInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.sideMetricLabel {
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.4);
+  letter-spacing: 0.5px;
+}
+
+.sideMetricValue {
+  font-size: 24px;
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.86);
+  line-height: 1;
+}
+
+.sideMetricTrack {
+  height: 6px;
+  background: rgba(17, 24, 39, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sideMetricFill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.sideMetricMeta {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.4);
+}
+
+.topRulesList {
+  display: grid;
+  gap: 16px;
+}
+
+.topRuleItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.topRuleInfo {
+  display: grid;
+  gap: 2px;
+}
+
+.topRuleName {
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.8);
+}
+
+.topRuleCategory {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.4);
+}
+
+.topRuleValue {
+  font-size: 13px;
+  font-weight: 950;
+  color: rgba(17, 24, 39, 0.8);
+  text-align: right;
+}
+
+.topRuleTrack {
+  grid-column: 1 / span 2;
+  height: 4px;
+  background: rgba(17, 24, 39, 0.04);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.topRuleFill {
+  height: 100%;
+  background: #6366f1;
+  border-radius: 999px;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.statsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.statsTable th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.4);
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+.statsTable td {
+  padding: 12px;
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.8);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.04);
+}
+
+.distRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.distLabel {
+  width: 100px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.6);
+  text-transform: capitalize;
+}
+
+.distTrack {
+  flex: 1;
+  height: 8px;
+  background: rgba(17, 24, 39, 0.04);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.distFill {
+  height: 100%;
+  background: #6366f1;
+}
+
+.distValue {
+  width: 40px;
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17, 24, 39, 0.8);
+  text-align: right;
+}
+
 .insightPanel {
   border-radius: 18px;
   border: 1px solid rgba(17, 24, 39, 0.08);
