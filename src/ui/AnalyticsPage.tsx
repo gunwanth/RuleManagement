@@ -2,7 +2,7 @@ import './Pages.css'
 import type { MetricsByRuleId } from '../analytics/types'
 import { aggregateMetrics, getRuleMetrics } from '../analytics/metrics'
 import type { RuleRecord } from '../rules/types'
-import { MetricsUsageBarChart } from './DashboardCharts'
+import { MetricsUsageBarChart, BudgetDonut, MetricsTopRulesChart } from './DashboardCharts'
 import { buildDailyTrend } from './trendUtils'
 
 export function AnalyticsPage({
@@ -47,14 +47,17 @@ export function AnalyticsPage({
       <div className="analyticsGrid">
         <div className="card">
           <div className="cardTitle">Executive Summary</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '10px' }}>
-            <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px', marginTop: '10px' }}>
+            <BudgetDonut pct={successPct} label="Success Rate" />
+            <div style={{ flex: 1 }}>
               <div className="metricCardLabel">TOTAL EXECUTIONS</div>
               <div className="sideMetricValue" style={{ fontSize: '32px' }}>{executions}</div>
-            </div>
-            <div>
-              <div className="metricCardLabel">AVG SUCCESS RATE</div>
-              <div className="sideMetricValue" style={{ fontSize: '32px', color: '#10b981' }}>{successPct}%</div>
+              <div style={{ marginTop: '12px' }}>
+                <div className="metricCardLabel">PLATFORM STATUS</div>
+                <div style={{ color: successPct > 80 ? '#10b981' : '#f59e0b', fontWeight: 900, fontSize: '14px' }}>
+                  {successPct > 80 ? '● OPTIMAL' : '● MONITORING'}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -75,9 +78,16 @@ export function AnalyticsPage({
         </div>
       </div>
 
-      <div className="card" style={{ marginTop: '24px' }}>
-        <div className="cardTitle">Performance Trend (Last 7 Days)</div>
-        <MetricsUsageBarChart points={resolveDetailedTrend(rules, metrics, 7)} />
+      <div className="analyticsGrid" style={{ marginTop: '24px' }}>
+        <div className="card">
+          <div className="cardTitle">Performance Trend (Last 7 Days)</div>
+          <MetricsUsageBarChart points={resolveDetailedTrend(rules, metrics, 7)} />
+        </div>
+
+        <div className="card">
+          <div className="cardTitle">Rule Usage Ranking</div>
+          <MetricsTopRulesChart rules={rules} metrics={metrics} />
+        </div>
       </div>
 
       <div className="card" style={{ marginTop: '24px' }}>

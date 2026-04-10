@@ -17,7 +17,7 @@ export function BudgetDonut({
       <div
         className="donut"
         style={{
-          background: `conic-gradient(rgba(124,58,237,0.95) ${clamped}%, rgba(17,24,39,0.08) 0)`,
+          background: `conic-gradient(var(--accent) ${clamped}%, var(--border) 0)`,
         }}
       >
         <div className="donutInner">
