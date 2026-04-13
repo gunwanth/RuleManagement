@@ -35,9 +35,10 @@ export function DashboardOverview({
   const [activeTestRuleId, setActiveTestRuleId] = useState<string | null>(null)
   const [expandedChartRuleId, setExpandedChartRuleId] = useState<string | null>(null)
 
-  const activeRuleForTesting = rules.find((rule) => rule.id === activeTestRuleId) || null
+  const runningRules = rules.filter(isRunningWorkflowRule)
+  const activeRuleForTesting = runningRules.find((rule) => rule.id === activeTestRuleId) || null
 
-  const filteredRules = rules.filter((rule) => {
+  const filteredRules = runningRules.filter((rule) => {
     const matchesSearch =
       rule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       rule.id.includes(searchQuery)
@@ -103,56 +104,53 @@ export function DashboardOverview({
 
       <div className="fleetSection">
         <div className="fleetHeader">
-          <h2 className="fleetTitle">Active Logic Fleet ({filteredRules.length})</h2>
+          <h2 className="fleetTitle">Running Workflows ({filteredRules.length})</h2>
           <a className="fleetRefresh" onClick={() => window.location.reload()}>Refresh Activity</a>
         </div>
         <div className="pageKicker" style={{ marginBottom: 20 }}>
-          Click any rule name to deep-dive into its execution logic and historical performance.
+          Click any workflow name to inspect recent logs, execution trend, and current performance.
         </div>
 
         <div className="fleetTableCard">
-          <table className="fleetTable">
-            <thead>
-              <tr>
-                <th>Logic Identifier</th>
-                <th>Category</th>
-                <th>Stability & Pulse</th>
-                <th>Recent Activity</th>
-                <th>Deployment Date</th>
-                <th>Management</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRules.map((rule) => (
-                <React.Fragment key={rule.id}>
-                  <RuleFleetRow
-                    rule={rule}
-                    metrics={getRuleMetrics(metrics, rule.id)}
-                    onOpen={() => onOpenRule(rule.id)}
-                    onRun={() => setActiveTestRuleId(rule.id)}
-                    onDelete={() => onDeleteRule(rule.id)}
-                    onToggleChart={(id) => setExpandedChartRuleId(expandedChartRuleId === id ? null : id)}
-                  />
-                  {expandedChartRuleId === rule.id && (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        style={{
-                          padding: '0 24px 24px',
-                          background: '#f8fafc',
-                          borderBottom: '1px solid rgba(17, 24, 39, 0.04)',
-                        }}
-                      >
-                        <div style={{ marginTop: '16px' }}>
+          {filteredRules.length === 0 ? (
+            <div className="emptyNote" style={{ margin: 24 }}>
+              No running workflows match the current filters.
+            </div>
+          ) : (
+            <table className="fleetTable">
+              <thead>
+                <tr>
+                  <th>Workflow</th>
+                  <th>Category</th>
+                  <th>Stability & Pulse</th>
+                  <th>Recent Activity</th>
+                  <th>Deployment Date</th>
+                  <th>Management</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRules.map((rule) => (
+                  <React.Fragment key={rule.id}>
+                    <RuleFleetRow
+                      rule={rule}
+                      metrics={getRuleMetrics(metrics, rule.id)}
+                      onOpen={() => onOpenRule(rule.id)}
+                      onRun={() => setActiveTestRuleId(rule.id)}
+                      onDelete={() => onDeleteRule(rule.id)}
+                      onToggleChart={(id) => setExpandedChartRuleId(expandedChartRuleId === id ? null : id)}
+                    />
+                    {expandedChartRuleId === rule.id && (
+                      <tr className="fleetExpandedRow">
+                        <td colSpan={6} className="fleetExpandedCell">
                           <RuleChartCard rule={rule} metrics={metrics} />
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
@@ -171,13 +169,13 @@ function RuleChartCard({ rule, metrics }: { rule: RuleRecord, metrics: MetricsBy
   const ruleMetrics = getRuleMetrics(metrics, rule.id)
   const trendEvents = getRuleTrendEvents(rule, metrics)
   const trendPoints = buildDailyTrend(trendEvents, 7)
+  const recentEvents = trendEvents.slice(0, 5)
 
   const isEligibility = rule.type === 'eligibility'
   const total = isEligibility
     ? (ruleMetrics.screenedPass ?? 0) + (ruleMetrics.screenedFail ?? 0)
     : ruleMetrics.totalRuns
   const ok = isEligibility ? (ruleMetrics.screenedPass ?? 0) : ruleMetrics.successRuns
-  const fail = isEligibility ? (ruleMetrics.screenedFail ?? 0) : ruleMetrics.failedRuns
   const successRate = total > 0 ? Math.round((ok / total) * 100) : 0
 
   const actionRows = isEligibility
@@ -187,12 +185,12 @@ function RuleChartCard({ rule, metrics }: { rule: RuleRecord, metrics: MetricsBy
         fail: value.fail,
         total: value.pass + value.fail,
       }))
-    : rule.functions.map((fn) => ({ name: fn.name, ok, fail, total }))
+    : []
 
   actionRows.sort((left, right) => right.total - left.total)
 
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
+    <div className="card" style={{ display: 'grid', gap: '20px', padding: '24px' }}>
       <div className="cardTitle" style={{ marginBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontSize: '15px', color: '#111827', fontWeight: 800 }}>{rule.name}</span>
         <span
@@ -220,18 +218,67 @@ function RuleChartCard({ rule, metrics }: { rule: RuleRecord, metrics: MetricsBy
         </div>
       </div>
 
-      <div style={{ marginTop: '12px' }}>
-        <div className="metricCardLabel" style={{ marginBottom: '12px' }}>7-DAY EXECUTION TREND</div>
-        <div style={{ height: '140px' }}>
-          <MetricsUsageBarChart points={trendPoints} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(280px, 0.9fr)', gap: '20px', alignItems: 'start' }}>
+        <div style={{ minWidth: 0 }}>
+          <div className="metricCardLabel" style={{ marginBottom: '12px' }}>7-DAY EXECUTION TREND</div>
+          {trendPoints.some((point) => point.total > 0) ? (
+            <MetricsUsageBarChart points={trendPoints} />
+          ) : (
+            <div className="emptyNote">No execution trend yet. Run this workflow to populate the chart.</div>
+          )}
+        </div>
+
+        <div style={{ minWidth: 0 }}>
+          <div className="metricCardLabel" style={{ marginBottom: '12px' }}>RECENT LOGS</div>
+          {recentEvents.length > 0 ? (
+            <div style={{ display: 'grid', gap: '8px', maxHeight: '280px', overflowY: 'auto' }}>
+              {recentEvents.map((event, index) => (
+                <div
+                  key={`${event.ts}-${index}`}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 12px',
+                    background: '#f8fafc',
+                    borderRadius: '10px',
+                    border: '1px solid #e2e8f0',
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#334155' }}>
+                      {new Date(event.ts).toLocaleString()}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b' }}>
+                      {event.ok ? 'Workflow completed successfully' : 'Workflow ended in failure'}
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      flexShrink: 0,
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      padding: '4px 8px',
+                      borderRadius: '999px',
+                      background: event.ok ? '#ecfdf5' : '#fef2f2',
+                      color: event.ok ? '#059669' : '#dc2626',
+                    }}
+                  >
+                    {event.ok ? 'SUCCESS' : 'FAILED'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="emptyNote">No logs yet for this workflow.</div>
+          )}
         </div>
       </div>
 
-      {actionRows.length > 0 && (
-        <div style={{ marginTop: '16px' }}>
-          <div className="metricCardLabel" style={{ marginBottom: '12px' }}>
-            {isEligibility ? 'TOP STREAMS' : 'KEY ACTIONS'}
-          </div>
+      {isEligibility && actionRows.length > 0 && (
+        <div>
+          <div className="metricCardLabel" style={{ marginBottom: '12px' }}>TOP STREAMS</div>
           <div style={{ display: 'grid', gap: '8px', maxHeight: '130px', overflowY: 'auto', paddingRight: '4px' }}>
             {actionRows.slice(0, 4).map((row) => (
               <div
@@ -456,4 +503,10 @@ function getRuleTrendEvents(rule: RuleRecord, metrics: MetricsByRuleId): TrendEv
     return ruleMetrics.screenedHistory.map((event) => ({ ts: event.ts, ok: event.pass }))
   }
   return ruleMetrics.history.map((event) => ({ ts: event.ts, ok: event.ok }))
+}
+
+function isRunningWorkflowRule(rule: RuleRecord) {
+  const isTemplate = rule.id.includes('template') || rule.name.toLowerCase().includes('template')
+  const hasWorkflow = rule.workflow.nodes.length > 0 || rule.workflow.edges.length > 0
+  return !isTemplate && hasWorkflow
 }

@@ -794,6 +794,7 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  table-layout: fixed;
 }
 
 .fleetTable th {
@@ -901,6 +902,7 @@
 .fleetManagement {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .mgmtBtn {
@@ -920,6 +922,15 @@
 .mgmtBtnRun:hover { color: #3b82f6; }
 .mgmtBtnLog:hover { color: #6366f1; }
 .mgmtBtnDel:hover { color: #ef4444; }
+
+.fleetExpandedRow td {
+  border-bottom: none;
+}
+
+.fleetExpandedCell {
+  padding: 0 24px 24px !important;
+  background: #f8fafc;
+}
 
 /* Modal Styles */
 .modalOverlay {
@@ -1955,5 +1966,24 @@
     border-left: none;
     border-top: 1px solid rgba(17, 24, 39, 0.08);
     padding-top: 12px;
+  }
+  .fleetTable {
+    table-layout: auto;
+  }
+  .fleetTableCard {
+    overflow-x: auto;
+  }
+  .fleetManagement {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 720px) {
+  .fleetTable th,
+  .fleetTable td {
+    padding: 14px 16px;
+  }
+  .fleetExpandedCell {
+    padding: 0 16px 16px !important;
   }
 }
