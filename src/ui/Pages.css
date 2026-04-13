@@ -562,6 +562,12 @@
   display: grid;
   justify-items: center;
   gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.usageBarGroup:hover {
+  transform: translateY(-2px);
 }
 
 .usageBarPair {
@@ -575,15 +581,15 @@
 
 .usageBar {
   width: min(28px, 42%);
-  border-radius: 8px 8px 0 0;
+  transition: height 0.3s ease;
 }
 
 .usageBarGood {
-  background: rgba(83, 201, 121, 0.92);
+  background: rgba(34, 197, 94, 0.95);
 }
 
 .usageBarBad {
-  background: rgba(255, 122, 122, 0.92);
+  background: rgba(239, 68, 68, 0.95);
 }
 
 .usageBarLabel {

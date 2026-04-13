@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './Pages.css'
 import type { TrendPoint } from './trendUtils'
 import type { MetricsByRuleId } from '../analytics/types'
@@ -35,15 +36,45 @@ export function MetricsUsageBarChart({
   points: TrendPoint[]
 }) {
   const maxTotal = Math.max(1, ...points.map((point) => point.total), 1)
+  const [hoveredPoint, setHoveredPoint] = useState<TrendPoint | null>(null)
 
   return (
-    <div className="usageBars">
+    <div className="usageBars" onMouseLeave={() => setHoveredPoint(null)}>
       {points.map((point) => {
         const totalHeight = point.total > 0 ? Math.max(10, (point.total / maxTotal) * 240) : 0
+        const successHeight = point.total > 0 ? (point.ok / point.total) * totalHeight : 0
+        const failHeight = totalHeight - successHeight
+
         return (
-          <div key={point.day} className="usageBarGroup">
-            <div className="usageBarPair">
-              <div className="usageBar" style={{ height: `${totalHeight}px`, background: '#f59e0b', borderRadius: '4px' }} />
+          <div 
+            key={point.day} 
+            className="usageBarGroup" 
+            onMouseEnter={() => setHoveredPoint(point)}
+            style={{ position: 'relative' }}
+          >
+            {hoveredPoint === point && (
+              <div className="chartTooltip" style={{
+                position: 'absolute',
+                top: '-60px',
+                background: '#111827',
+                color: 'white',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                zIndex: 10,
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{formatMonthLabel(point.day)}</div>
+                <div style={{ color: '#34d399' }}>Success: {point.ok}</div>
+                <div style={{ color: '#f87171' }}>Failed: {point.total - point.ok}</div>
+                <div style={{ color: '#9ca3af', marginTop: '2px', borderTop: '1px solid #374151', paddingTop: '2px' }}>Total: {point.total}</div>
+              </div>
+            )}
+            <div className="usageBarPair" style={{ flexDirection: 'column', gap: 0, justifyContent: 'flex-end', height: '240px' }}>
+              {failHeight > 0 && <div className="usageBar usageBarBad" style={{ height: `${failHeight}px`, width: '100%', borderRadius: successHeight === 0 ? '4px 4px 0 0' : '0' }} />}
+              {successHeight > 0 && <div className="usageBar usageBarGood" style={{ height: `${successHeight}px`, width: '100%', borderRadius: failHeight === 0 ? '4px 4px 0 0' : '0' }} />}
             </div>
             <div className="usageBarLabel">{formatMonthLabel(point.day)}</div>
           </div>
@@ -85,13 +116,40 @@ export function MetricsTopRulesChart({
             : 0
 
         return (
-          <div key={rule.id} className="rankRow rankRowChart">
+          <div key={rule.id} className="rankRow rankRowChart" style={{ position: 'relative' }} 
+               onMouseEnter={(e) => {
+                 const tooltip = document.createElement('div');
+                 tooltip.className = 'chartTooltip dynamic-tooltip';
+                 tooltip.style.position = 'absolute';
+                 tooltip.style.right = '0';
+                 tooltip.style.top = '-40px';
+                 tooltip.style.background = '#111827';
+                 tooltip.style.color = 'white';
+                 tooltip.style.padding = '8px 12px';
+                 tooltip.style.borderRadius = '8px';
+                 tooltip.style.fontSize = '12px';
+                 tooltip.style.zIndex = '10';
+                 tooltip.style.whiteSpace = 'nowrap';
+                 tooltip.style.pointerEvents = 'none';
+                 tooltip.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                 tooltip.innerHTML = `
+                   <div style="font-weight: bold; margin-bottom: 4px;">${rule.name}</div>
+                   <div style="color: #34d399">Success: ${ruleMetrics.successRuns}</div>
+                   <div style="color: #f87171">Failed: ${ruleMetrics.failedRuns}</div>
+                   <div style="color: #9ca3af; margin-top: 2px; border-top: 1px solid #374151; padding-top: 2px;">Total: ${ruleMetrics.totalRuns}</div>
+                 `;
+                 e.currentTarget.appendChild(tooltip);
+               }}
+               onMouseLeave={(e) => {
+                 const tooltips = e.currentTarget.querySelectorAll('.dynamic-tooltip');
+                 tooltips.forEach(t => t.remove());
+               }}>
             <div className="rankMain">
               <div className="rankName">{rule.name}</div>
             </div>
             <div className="rankTrack">
-              <div className="rankFillBad" style={{ width: `${failWidth}%` }} />
               <div className="rankFillGood" style={{ width: `${successWidth}%` }} />
+              <div className="rankFillBad" style={{ width: `${failWidth}%` }} />
             </div>
           </div>
         )
