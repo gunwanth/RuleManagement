@@ -333,11 +333,6 @@ function App() {
             metrics={metrics} 
             onOpenRule={openRule} 
             onCreateNewRule={createNewRule} 
-            onViewDetailedReport={() => {
-              setPage('analytics')
-              window.location.hash = '/analytics'
-            }}
-            onUpdateRules={setRules}
             onUpdateMetrics={setMetrics}
             onDeleteRule={(id) => {
               setRules((prev) => deleteRule(prev, id))
