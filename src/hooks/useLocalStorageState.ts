@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 export function useLocalStorageState<T>(key: string, initialValue: T) {
   const [value, setValue] = useState<T>(() => {
@@ -11,14 +11,34 @@ export function useLocalStorageState<T>(key: string, initialValue: T) {
     }
   })
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value))
-    } catch {
-      // ignore
-    }
-  }, [key, value])
+  const updateValue = useCallback((newValue: T | ((prev: T) => T)) => {
+    setValue((prev) => {
+      const resolved = typeof newValue === 'function' ? (newValue as (p: T) => T)(prev) : newValue
+      try {
+        localStorage.setItem(key, JSON.stringify(resolved))
+      } catch {
+        // ignore
+      }
+      return resolved
+    })
+  }, [key])
 
-  return [value, setValue] as const
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === key && e.newValue !== null) {
+        try {
+          const parsed = JSON.parse(e.newValue) as T
+          setValue(parsed)
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [key])
+
+  return [value, updateValue] as const
 }
 

@@ -40,8 +40,14 @@ function Card({ title, children }: { title?: string; children: React.ReactNode }
 }
 
 function App() {
-  const [view, setView] = useState<'shell' | 'builder'>('shell')
-  const [page, setPage] = useState<SidebarPage>('dashboard')
+  const [view, setView] = useLocalStorageState<'shell' | 'builder'>(
+    'sweetshop.view.v1',
+    'shell',
+  )
+  const [page, setPage] = useLocalStorageState<SidebarPage>(
+    'sweetshop.page.v1',
+    'dashboard',
+  )
   const [workflow, setWorkflow] = useState<WorkflowState>(() =>
     createBlankWorkflow(),
   )
@@ -52,7 +58,10 @@ function App() {
     'sweetshop.rules.v1',
     [],
   )
-  const [activeRuleId, setActiveRuleId] = useState<string | null>(null)
+  const [activeRuleId, setActiveRuleId] = useLocalStorageState<string | null>(
+    'sweetshop.activeRuleId.v1',
+    null,
+  )
   const [metrics, setMetrics] = useLocalStorageState<MetricsByRuleId>(
     'sweetshop.metrics.v1',
     {},
@@ -219,15 +228,30 @@ function App() {
       const pageMatch = validPages.find(p => hash === `/${p}`)
       
       if (pageMatch || hash === '/rules' || hash === '/flowlab') {
+        const nextPage = pageMatch || (hash === '/flowlab' ? 'simulation' : 'dashboard')
+        setPage(nextPage)
         setView('shell')
-        setPage(pageMatch || (hash === '/flowlab' ? 'simulation' : 'dashboard'))
       }
     }
 
     syncFromHash()
     window.addEventListener('hashchange', syncFromHash)
     return () => window.removeEventListener('hashchange', syncFromHash)
-  }, [rules])
+  }, [rules, setActiveRuleId, setPage, setView])
+
+  useEffect(() => {
+    if (view === 'builder') {
+      const expectedHash = activeRuleId ? `/rule/${encodeURIComponent(activeRuleId)}` : '/rule/new'
+      if (window.location.hash !== `#${expectedHash}`) {
+        window.location.hash = expectedHash
+      }
+    } else {
+      const expectedHash = `/${page}`
+      if (window.location.hash !== `#${expectedHash}`) {
+        window.location.hash = expectedHash
+      }
+    }
+  }, [view, page, activeRuleId])
 
   if (view === 'builder') {
     return (
