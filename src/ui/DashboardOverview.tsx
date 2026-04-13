@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import './Pages.css'
 import type { MetricsByRuleId } from '../analytics/types'
 import { aggregateMetrics, getRuleMetrics, recordRuleRun } from '../analytics/metrics'
@@ -37,6 +37,7 @@ export function DashboardOverview({
   const [moduleFilter, setModuleFilter] = useState('All Modules')
   const [statusFilter, setStatusFilter] = useState('All Status')
   const [activeTestRuleId, setActiveTestRuleId] = useState<string | null>(null)
+  const [expandedChartRuleId, setExpandedChartRuleId] = useState<string | null>(null)
 
   const activeRuleForTesting = rules.find(r => r.id === activeTestRuleId) || null
 
@@ -110,14 +111,25 @@ export function DashboardOverview({
             </thead>
             <tbody>
               {filteredRules.map(rule => (
-                <RuleFleetRow 
-                  key={rule.id} 
-                  rule={rule} 
-                  metrics={getRuleMetrics(metrics, rule.id)}
-                  onOpen={() => onOpenRule(rule.id)}
-                  onRun={() => setActiveTestRuleId(rule.id)}
-                  onDelete={() => onDeleteRule(rule.id)}
-                />
+                <React.Fragment key={rule.id}>
+                  <RuleFleetRow 
+                    rule={rule} 
+                    metrics={getRuleMetrics(metrics, rule.id)}
+                    onOpen={() => onOpenRule(rule.id)}
+                    onRun={() => setActiveTestRuleId(rule.id)}
+                    onDelete={() => onDeleteRule(rule.id)}
+                    onToggleChart={(id) => setExpandedChartRuleId(expandedChartRuleId === id ? null : id)}
+                  />
+                  {expandedChartRuleId === rule.id && (
+                    <tr>
+                      <td colSpan={6} style={{ padding: '0 24px 24px', background: '#f8fafc', borderBottom: '1px solid rgba(17, 24, 39, 0.04)' }}>
+                        <div style={{ marginTop: '16px' }}>
+                          <RuleChartCard rule={rule} metrics={metrics} />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
@@ -131,20 +143,10 @@ export function DashboardOverview({
           onUpdateMetrics={onUpdateMetrics}
         />
       )}
-
-      <div className="fleetSection" style={{ marginTop: '40px' }}>
-        <div className="fleetHeader">
-          <h2 className="fleetTitle">Rule Performance & Action Trends</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
-          {filteredRules.map(rule => (
-            <RuleChartCard key={rule.id} rule={rule} metrics={metrics} />
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
+
 
 function RuleChartCard({ rule, metrics }: { rule: RuleRecord, metrics: MetricsByRuleId }) {
   const ruleMetrics = getRuleMetrics(metrics, rule.id)
@@ -294,13 +296,15 @@ function RuleFleetRow({
   metrics, 
   onOpen,
   onRun,
-  onDelete
+  onDelete,
+  onToggleChart
 }: { 
   rule: RuleRecord
   metrics: any
   onOpen: () => void
   onRun: () => void
   onDelete: () => void
+  onToggleChart: (id: string) => void
 }) {
   const successRate = metrics.totalRuns > 0 
     ? Math.round((metrics.successRuns / metrics.totalRuns) * 100) 
@@ -359,7 +363,7 @@ function RuleFleetRow({
         <div className="fleetManagement">
           <button className="mgmtBtn mgmtBtnEdit" title="Edit" onClick={onOpen}>✏️</button>
           <button className="mgmtBtn mgmtBtnRun" title="Run Test Cases" onClick={onRun}>▶️</button>
-          <button className="mgmtBtn mgmtBtnLog" title="View Logs" onClick={onOpen}>📋</button>
+          <button className="mgmtBtn mgmtBtnLog" title="View Logs" onClick={() => onToggleChart(rule.id)}>�</button>
           <button className="mgmtBtn mgmtBtnDel" title="Delete" onClick={() => {
             if (confirm(`Are you sure you want to delete ${rule.name}?`)) {
               onDelete()
