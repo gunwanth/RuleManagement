@@ -432,6 +432,7 @@ function App() {
             templates={RULE_TEMPLATES}
             metrics={metrics}
             onOpenRule={openRule}
+            onNavigate={setPage}
             onOpenTemplate={(type) => {
               const template = [...RULE_TEMPLATES, ...SYSTEM_RULE_TEMPLATES].find(t => t.type === type)
               if (!template) return

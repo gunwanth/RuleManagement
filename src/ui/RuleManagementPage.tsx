@@ -1,7 +1,9 @@
 import './Pages.css'
+import { useState } from 'react'
 import type { MetricsByRuleId } from '../analytics/types'
 import { getRuleMetrics } from '../analytics/metrics'
 import type { RuleRecord } from '../rules/types'
+import type { SidebarPage } from './Sidebar'
 
 type SparkItem = { ok: boolean; ts: string } | { pass: boolean; ts: string }
 type TrendEvent = { ts: string; ok: boolean }
@@ -15,6 +17,7 @@ export function RuleManagementPage({
   onCreateEligibilityRule,
   onCreateSupportRule,
   onOpenTemplate,
+  onNavigate,
   isTemplatesView = false,
   templates = [],
 }: {
@@ -25,6 +28,7 @@ export function RuleManagementPage({
   onCreateEligibilityRule: () => void
   onCreateSupportRule: () => void
   onOpenTemplate?: (type: string) => void
+  onNavigate?: (page: SidebarPage) => void
   isTemplatesView?: boolean
   templates?: RuleRecord[]
 }) {
@@ -37,6 +41,14 @@ export function RuleManagementPage({
     { id: 'eligibility', name: 'Eligibility', icon: '✅' },
     { id: 'order', name: 'Order Processing', icon: '📦' },
     { id: 'support', name: 'CRM Support', icon: '🎧' },
+  ]
+
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
+
+  const ruleGroups = [
+    { id: 'support-transactions-alerts', name: 'CRM Support Operations, Transactions & Alerts', types: ['support', 'transactions', 'alerts'] },
+    { id: 'shop-order', name: 'Shop Management & Order Processing', types: ['sweetshop', 'order'] },
+    { id: 'eligibility-fraud', name: 'Eligibility & Fraud Detection', types: ['eligibility', 'fraud'] },
   ]
 
   return (
@@ -71,31 +83,37 @@ export function RuleManagementPage({
             <div className="pageKicker">Your actual production rules.</div>
           </div>
           <div className="ruleGrid" style={{ marginBottom: '40px' }}>
-            {rules.map((r) => {
-              const m = getRuleMetrics(metrics, r.id)
-              const isEligibility = r.type === 'eligibility'
-              const baseTotal = isEligibility ? (m.screenedPass ?? 0) + (m.screenedFail ?? 0) : m.totalRuns
-              const pct = baseTotal ? Math.round(((isEligibility ? (m.screenedPass ?? 0) : m.successRuns) / baseTotal) * 100) : 0
-              
+            {ruleGroups.map((group) => {
+              const groupRules = rules.filter(r => group.types.includes(r.type))
+              const isExpanded = expandedGroup === group.id
               return (
-                <div key={r.id} className="ruleCard">
+                <div key={group.id} className="ruleCard" onClick={() => setExpandedGroup(isExpanded ? null : group.id)} style={{ cursor: 'pointer' }}>
                   <div className="ruleCardTop">
-                    <div className="ruleCardName">{r.name}</div>
-                    <div className="pill">{isEligibility ? `${baseTotal} screenings` : `${m.totalRuns} runs`}</div>
+                    <div className="ruleCardName">{group.name}</div>
+                    <div className="pill">{groupRules.length} rules</div>
                   </div>
-                  <div className="ruleCardMeta">{r.workflow.nodes.length} nodes - {r.workflow.edges.length} connections</div>
-                  <div className="ruleCardChart">
-                    <div className="chartLabelRow">
-                      <div>{isEligibility ? 'Screened pass' : 'Success'}</div>
-                      <div>{pct}%</div>
+                  <div className="ruleCardMeta">Click to view rules and actions</div>
+                  {isExpanded && (
+                    <div style={{ marginTop: '12px' }}>
+                      {groupRules.map((r) => {
+                        const m = getRuleMetrics(metrics, r.id)
+                        const isEligibility = r.type === 'eligibility'
+                        const baseTotal = isEligibility ? (m.screenedPass ?? 0) + (m.screenedFail ?? 0) : m.totalRuns
+                        const pct = baseTotal ? Math.round(((isEligibility ? (m.screenedPass ?? 0) : m.successRuns) / baseTotal) * 100) : 0
+                        return (
+                          <div key={r.id} style={{ borderTop: '1px solid #e5e7eb', paddingTop: '8px', marginTop: '8px' }}>
+                            <div style={{ fontWeight: 'bold' }}>{r.name}</div>
+                            <div style={{ fontSize: '12px', color: '#6b7280' }}>{r.workflow.nodes.length} nodes - {pct}% success</div>
+                            <div className="ruleCardActions" style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                              <button className="btn btnPrimary" onClick={(e) => { e.stopPropagation(); onOpenRule(r.id) }} type="button">Open Builder</button>
+                              <button className="btn" onClick={(e) => { e.stopPropagation(); onOpenRule(r.id) }} type="button">Manual Test Cases</button>
+                              <button className="btn" onClick={(e) => { e.stopPropagation(); onNavigate?.('simulation') }} type="button">Simulation Lab</button>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
-                    <div className="progress">
-                      <div className="progressFill" style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                  <div className="ruleCardActions">
-                    <button className="btn btnPrimary" onClick={() => onOpenRule(r.id)} type="button">Open Builder</button>
-                  </div>
+                  )}
                 </div>
               )
             })}

@@ -8,23 +8,51 @@ import type { RuleRecord } from '../rules/types'
 export function BudgetDonut({
   pct,
   label,
+  color,
 }: {
   pct: number
   label: string
+  color?: string
 }) {
   const clamped = Math.max(0, Math.min(100, pct))
+  const fillColor = color ?? '#10b981'
   return (
     <div className="donutWrap">
       <div
         className="donut"
         style={{
-          background: `conic-gradient(#10b981 ${clamped}%, #f1f5f9 0)`,
+          background: `conic-gradient(${fillColor} ${clamped}%, #f1f5f9 0)`,
         }}
       >
         <div className="donutInner">
           <div className="donutPct">{clamped}%</div>
           <div className="donutLab">{label}</div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+export function HealthPercentBar({
+  pct,
+  label,
+  color,
+}: {
+  pct: number
+  label: string
+  color?: string
+}) {
+  const clamped = Math.max(0, Math.min(100, pct))
+  const fillColor = color ?? '#10b981'
+
+  return (
+    <div className="healthBarCard">
+      <div className="healthBarInfo">
+        <div className="healthBarLabel">{label}</div>
+        <div className="healthBarPct">{clamped}%</div>
+      </div>
+      <div className="healthTrack">
+        <div className="healthFill" style={{ width: `${clamped}%`, background: fillColor }} />
       </div>
     </div>
   )

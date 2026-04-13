@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Pages.css'
 import type { MetricsByRuleId } from '../analytics/types'
 import { getRuleMetrics, recordRuleRun } from '../analytics/metrics'
@@ -7,6 +7,8 @@ import { buildDailyTrend, type TrendEvent } from './trendUtils'
 import {
   MetricsUsageBarChart,
   BudgetDonut,
+  MetricsTopRulesChart,
+  HealthPercentBar,
 } from './DashboardCharts'
 import { runWorkflow } from '../workflow/runEngine'
 import { applyAction, evaluateCondition } from '../shop/engine'
@@ -52,19 +54,46 @@ export function DashboardOverview({
     return matchesSearch && matchesModule && matchesStatus
   })
 
+  useEffect(() => {
+    if (!expandedChartRuleId && filteredRules.length > 0) {
+      setExpandedChartRuleId(filteredRules[0].id)
+    }
+  }, [expandedChartRuleId, filteredRules])
+
+  const allMetrics = Object.values(metrics)
+  const totalRuns = allMetrics.reduce((sum, m) => sum + m.totalRuns, 0)
+  const successRuns = allMetrics.reduce((sum, m) => sum + m.successRuns, 0)
+  const failedRuns = allMetrics.reduce((sum, m) => sum + m.failedRuns, 0)
+  const overallSuccessRate = totalRuns > 0 ? Math.round((successRuns / totalRuns) * 100) : 0
+  const activeWorkflowCount = runningRules.length
+  const systemHealth =
+    overallSuccessRate >= 90
+      ? 'Excellent'
+      : overallSuccessRate >= 75
+      ? 'Good'
+      : overallSuccessRate >= 50
+      ? 'Degraded'
+      : 'Poor'
+
+  const healthColor =
+    overallSuccessRate >= 90
+      ? '#10b981'
+      : overallSuccessRate >= 75
+      ? '#f59e0b'
+      : overallSuccessRate >= 50
+      ? '#f97316'
+      : '#ef4444'
+
+  const overallTrendEvents = allMetrics.flatMap((m) => m.history.map((event) => ({ ts: event.ts, ok: event.ok })))
+  const overallTrendPoints = buildDailyTrend(overallTrendEvents, 7)
+
   return (
     <div className="pageRoot dashboardPage">
       <div className="pageHeader">
-        <div className="dashboardHero">
-          <div className="searchBarContainer" style={{ flex: 1, display: 'flex', gap: 16, alignItems: 'center' }}>
-            <input
-              type="text"
-              className="formInput"
-              placeholder="Search by rule name or ID..."
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              style={{ maxWidth: 400 }}
-            />
+        <div className="pageHeaderRow">
+          <div>
+            <div className="pageTitle">Workflow Dashboard</div>
+            <div className="pageKicker">Monitor workflow health, execution trends, and active rules in one place.</div>
           </div>
           <div className="dashboardRange" style={{ gap: 20 }}>
             <label className="formLabel" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -99,6 +128,60 @@ export function DashboardOverview({
               + Create New Rule
             </button>
           </div>
+        </div>
+        <div className="dashboardHero">
+          <div className="searchBarContainer" style={{ flex: 1, display: 'flex', gap: 16, alignItems: 'center' }}>
+            <input
+              type="text"
+              className="formInput"
+              placeholder="Search by rule name or ID..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              style={{ maxWidth: 400 }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="pageKicker" style={{ marginBottom: 24 }}>
+        Below is an overview of all workflow activity, success rates, system health, and execution trends before the running workflows list.
+      </div>
+
+      <div className="grid3" style={{ gap: 18, marginBottom: 24 }}>
+        <div className="card" style={{ padding: '18px 20px' }}>
+          <div className="metricCardLabel">Total Runs</div>
+          <div className="sideMetricValue" style={{ fontSize: '36px', marginTop: 8 }}>{totalRuns}</div>
+          <div className="metricCardDesc" style={{ marginTop: 8 }}>All executed workflow runs across the system.</div>
+        </div>
+        <div className="card" style={{ padding: '18px 20px' }}>
+          <div className="metricCardLabel">Overall Success Rate</div>
+          <div className="sideMetricValue" style={{ fontSize: '36px', marginTop: 8 }}>{overallSuccessRate}%</div>
+          <BudgetDonut pct={overallSuccessRate} label="Success" />
+          <div className="metricCardDesc" style={{ marginTop: 8 }}>Completed runs that succeeded across all active workflows.</div>
+        </div>
+        <div className="card" style={{ padding: '18px 20px' }}>
+          <div className="metricCardLabel">System Health</div>
+          <div className="sideMetricValue" style={{ fontSize: '36px', marginTop: 8 }}>{systemHealth}</div>
+          <HealthPercentBar pct={overallSuccessRate} label="Health" color={healthColor} />
+          <div className="metricCardDesc" style={{ marginTop: 8 }}>
+            {activeWorkflowCount} active workflow{activeWorkflowCount === 1 ? '' : 's'} running now · {failedRuns} failed run{failedRuns === 1 ? '' : 's'}.
+          </div>
+        </div>
+      </div>
+
+      <div className="grid2" style={{ gap: 18, marginBottom: 30 }}>
+        <div className="card" style={{ minWidth: 0 }}>
+          <div className="metricCardLabel" style={{ marginBottom: 12 }}>7-Day System Trend</div>
+          {overallTrendPoints.some((point) => point.total > 0) ? (
+            <MetricsUsageBarChart points={overallTrendPoints} />
+          ) : (
+            <div className="emptyNote">No overall execution trend yet. Run workflows to populate the chart.</div>
+          )}
+        </div>
+
+        <div className="card" style={{ minWidth: 0 }}>
+          <div className="metricCardLabel" style={{ marginBottom: 12 }}>Top Running Workflows</div>
+          <MetricsTopRulesChart rules={runningRules} metrics={metrics} />
         </div>
       </div>
 
