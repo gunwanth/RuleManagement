@@ -6,6 +6,7 @@ import type { RuleRecord } from '../rules/types'
 import { buildDailyTrend, type TrendEvent } from './trendUtils'
 import {
   MetricsUsageBarChart,
+  BudgetDonut,
 } from './DashboardCharts'
 import { runWorkflow } from '../workflow/runEngine'
 import { applyAction, evaluateCondition } from '../shop/engine'
@@ -129,6 +130,79 @@ export function DashboardOverview({
           onClose={() => setActiveTestRuleId(null)} 
           onUpdateMetrics={onUpdateMetrics}
         />
+      )}
+
+      <div className="fleetSection" style={{ marginTop: '40px' }}>
+        <div className="fleetHeader">
+          <h2 className="fleetTitle">Rule Performance & Action Trends</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
+          {filteredRules.map(rule => (
+            <RuleChartCard key={rule.id} rule={rule} metrics={metrics} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RuleChartCard({ rule, metrics }: { rule: RuleRecord, metrics: MetricsByRuleId }) {
+  const ruleMetrics = getRuleMetrics(metrics, rule.id)
+  const trendEvents = getRuleTrendEvents(rule, metrics)
+  const trendPoints = buildDailyTrend(trendEvents, 7)
+  
+  const isElig = rule.type === 'eligibility'
+  const total = isElig ? (ruleMetrics.screenedPass ?? 0) + (ruleMetrics.screenedFail ?? 0) : ruleMetrics.totalRuns
+  const ok = isElig ? (ruleMetrics.screenedPass ?? 0) : ruleMetrics.successRuns
+  const fail = isElig ? (ruleMetrics.screenedFail ?? 0) : ruleMetrics.failedRuns
+  const successRate = total > 0 ? Math.round((ok / total) * 100) : 0
+
+  const actionRows = isElig
+    ? Object.entries(ruleMetrics.screenedByStream ?? {}).map(([name, val]) => ({ name: name.replace('_', ' '), ok: val.pass, fail: val.fail, total: val.pass + val.fail }))
+    : rule.functions.map(f => ({ name: f.name, ok, fail, total }))
+
+  actionRows.sort((a, b) => b.total - a.total)
+
+  return (
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
+      <div className="cardTitle" style={{ marginBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: '15px', color: '#111827', fontWeight: 800 }}>{rule.name}</span>
+        <span style={{ fontSize: '11px', color: '#6366f1', background: '#eef2ff', padding: '4px 8px', borderRadius: '6px', fontWeight: 800, textTransform: 'uppercase' }}>
+          {rule.type}
+        </span>
+      </div>
+      
+      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginTop: '4px' }}>
+        <div style={{ width: '70px', height: '70px' }}>
+           <BudgetDonut pct={successRate} label="Success" />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div className="metricCardLabel">TOTAL EXECUTIONS</div>
+          <div className="sideMetricValue" style={{ fontSize: '28px', color: '#111827' }}>{total}</div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '12px' }}>
+        <div className="metricCardLabel" style={{ marginBottom: '12px' }}>7-DAY EXECUTION TREND</div>
+        <div style={{ height: '140px' }}>
+          <MetricsUsageBarChart points={trendPoints} />
+        </div>
+      </div>
+
+      {actionRows.length > 0 && (
+        <div style={{ marginTop: '16px' }}>
+          <div className="metricCardLabel" style={{ marginBottom: '12px' }}>{isElig ? 'TOP STREAMS' : 'KEY ACTIONS'}</div>
+          <div style={{ display: 'grid', gap: '8px', maxHeight: '130px', overflowY: 'auto', paddingRight: '4px' }}>
+            {actionRows.slice(0, 4).map(row => (
+              <div key={row.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '8px 12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
+                <span style={{ fontWeight: 700, color: '#475569', textTransform: 'capitalize', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginRight: '12px' }}>
+                  {row.name.replace(/_/g, ' ')}
+                </span>
+                <span style={{ color: '#10b981', fontWeight: 800, flexShrink: 0 }}>{row.total} runs</span>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )
