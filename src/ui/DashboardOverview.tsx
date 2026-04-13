@@ -499,9 +499,15 @@ function RuleFleetRow({
 
 function getRuleTrendEvents(rule: RuleRecord, metrics: MetricsByRuleId): TrendEvent[] {
   const ruleMetrics = getRuleMetrics(metrics, rule.id)
-  if (rule.type === 'eligibility' && ruleMetrics.screenedHistory?.length) {
-    return ruleMetrics.screenedHistory.map((event) => ({ ts: event.ts, ok: event.pass }))
+
+  if (rule.type === 'eligibility') {
+    if (ruleMetrics.screenedHistory?.length) {
+      return ruleMetrics.screenedHistory.map((event) => ({ ts: event.ts, ok: event.pass }))
+    }
+    // Fallback to raw history when screened history is not yet populated.
+    return ruleMetrics.history.map((event) => ({ ts: event.ts, ok: event.ok }))
   }
+
   return ruleMetrics.history.map((event) => ({ ts: event.ts, ok: event.ok }))
 }
 
