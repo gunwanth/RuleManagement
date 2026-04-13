@@ -23,7 +23,7 @@ export function Sidebar({
   return (
     <aside className="sidebarRoot">
       <div className="sidebarBrand">
-        <span className="sidebarBrandText">RuleEngine.io</span>
+        <span className="sidebarBrandText">RuleIntelligence</span>
       </div>
 
       <nav className="sidebarNav">
