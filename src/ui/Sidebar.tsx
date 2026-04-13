@@ -13,7 +13,7 @@ export function Sidebar({
   const menuItems: { id: SidebarPage; label: string; icon?: string }[] = [
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'builder', label: 'Rule Builder' },
-    { id: 'simulation', label: 'Simulation & Flow Lab' },
+    { id: 'simulation', label: 'Simulation Lab' },
     { id: 'analytics', label: 'Analytics' },
     { id: 'templates', label: 'Templates' },
     { id: 'history', label: 'History' },
@@ -23,7 +23,7 @@ export function Sidebar({
   return (
     <aside className="sidebarRoot">
       <div className="sidebarBrand">
-        <span className="sidebarBrandText">Rule Intelligence</span>
+        <span className="sidebarBrandText">RuleEngine.io</span>
       </div>
 
       <nav className="sidebarNav">

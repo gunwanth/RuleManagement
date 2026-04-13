@@ -1,11 +1,17 @@
+import { useState } from 'react'
 import './Pages.css'
 import type { MetricsByRuleId } from '../analytics/types'
-import { aggregateMetrics, getRuleMetrics } from '../analytics/metrics'
+import { aggregateMetrics, getRuleMetrics, recordRuleRun } from '../analytics/metrics'
 import type { RuleRecord } from '../rules/types'
 import { buildDailyTrend, type TrendEvent } from './trendUtils'
 import {
   MetricsUsageBarChart,
 } from './DashboardCharts'
+import { runWorkflow } from '../workflow/runEngine'
+import { applyAction, evaluateCondition } from '../shop/engine'
+import { evaluateEligibilityCondition } from '../eligibility/engine'
+import type { ShopState } from '../shop/types'
+import type { CandidateProfile } from '../eligibility/types'
 
 export function DashboardOverview({
   rules,
@@ -13,37 +19,66 @@ export function DashboardOverview({
   onOpenRule,
   onCreateNewRule,
   onViewDetailedReport,
+  onUpdateRules,
+  onUpdateMetrics,
+  onDeleteRule,
 }: {
   rules: RuleRecord[]
   metrics: MetricsByRuleId
   onOpenRule: (id: string) => void
   onCreateNewRule: () => void
   onViewDetailedReport?: () => void
+  onUpdateRules: (updater: (prev: RuleRecord[]) => RuleRecord[]) => void
+  onUpdateMetrics: (updater: (prev: MetricsByRuleId) => MetricsByRuleId) => void
+  onDeleteRule: (id: string) => void
 }) {
-  const ruleIds = rules.map((r) => r.id)
-  const agg = aggregateMetrics(metrics, ruleIds)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [moduleFilter, setModuleFilter] = useState('All Modules')
+  const [statusFilter, setStatusFilter] = useState('All Status')
+  const [activeTestRuleId, setActiveTestRuleId] = useState<string | null>(null)
 
-  const activeRules = rules.filter((r) => r.workflow.nodes.length > 0).length
+  const activeRuleForTesting = rules.find(r => r.id === activeTestRuleId) || null
 
-  const executions = agg.totalRuns
-  const successful = agg.successRuns
-
-  const successPct =
-    executions > 0 ? Math.round((successful / executions) * 100) : 0
-
-  const systemHealth = Math.max(12, Math.min(98, successPct || 12))
+  const filteredRules = rules.filter(rule => {
+    const matchesSearch = rule.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         rule.id.includes(searchQuery)
+    const matchesModule = moduleFilter === 'All Modules' || rule.type === moduleFilter.toLowerCase()
+    return matchesSearch && matchesModule
+  })
 
   return (
     <div className="pageRoot dashboardPage">
       <div className="pageHeader">
         <div className="dashboardHero">
-          <div>
-            <h1 className="dashboardWelcome">Enterprise Rule Analytics</h1>
-            <div className="pageKicker">
-              Real-time performance metrics and system health monitoring.
-            </div>
+          <div className="searchBarContainer" style={{ flex: 1, display: 'flex', gap: 16, alignItems: 'center' }}>
+            <input 
+              type="text" 
+              className="formInput" 
+              placeholder="Search by rule name or ID..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ maxWidth: 400 }}
+            />
           </div>
-          <div className="dashboardRange">
+          <div className="dashboardRange" style={{ gap: 20 }}>
+            <label className="formLabel" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              Module:
+              <select className="formSelect" value={moduleFilter} onChange={(e) => setModuleFilter(e.target.value)} style={{ width: 140 }}>
+                <option>All Modules</option>
+                <option>Sweetshop</option>
+                <option>Eligibility</option>
+                <option>Order</option>
+                <option>Support</option>
+              </select>
+            </label>
+            <label className="formLabel" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              Status:
+              <select className="formSelect" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: 120 }}>
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+            </label>
             <button className="btn btnPrimary" onClick={onCreateNewRule} type="button">
               + Create New Rule
             </button>
@@ -51,80 +86,218 @@ export function DashboardOverview({
         </div>
       </div>
 
-      <div className="dashboardMainGrid">
-        <div className="dashboardLeftCol">
-          <div className="card">
-            <div className="metricCardBody">
-              <div className="metricCardLabel">OVERALL SUCCESS RATE</div>
-              <div className="metricCardValue">{successPct}%</div>
-              <div className="metricCardSub">Performance holding steady</div>
-              <div className="metricCardDesc">
-                Aggregated success across {executions} total executions. This is your primary platform reliability metric.
-              </div>
-              <button className="metricCardLink" type="button" onClick={onViewDetailedReport}>View detailed report →</button>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="cardTitle">Execution Trend</div>
-            <div className="pageKicker" style={{ marginBottom: 14 }}>Recent performance distribution</div>
-            <MetricsUsageBarChart points={resolveDashboardTrend(rules, metrics, 7)} />
-          </div>
+      <div className="fleetSection">
+        <div className="fleetHeader">
+          <h2 className="fleetTitle">Active Logic Fleet ({filteredRules.length})</h2>
+          <a className="fleetRefresh" onClick={() => window.location.reload()}>Refresh Activity</a>
+        </div>
+        <div className="pageKicker" style={{ marginBottom: 20 }}>
+          Click any rule name to deep-dive into its execution logic and historical performance.
         </div>
 
-        <div className="dashboardRightCol">
-          <div className="card">
-            <div className="sideMetricRow">
-              <div className="sideMetricInfo">
-                <div className="sideMetricLabel">SYSTEM HEALTH</div>
-                <div className="sideMetricValue">{systemHealth}%</div>
-              </div>
-              <div className="sideMetricTrack">
-                <div className="sideMetricFill" style={{ width: `${systemHealth}%`, background: '#10b981' }} />
-              </div>
-              <div className="sideMetricMeta">Optimal Stability</div>
-            </div>
-          </div>
+        <div className="fleetTableCard">
+          <table className="fleetTable">
+            <thead>
+              <tr>
+                <th>Logic Identifier</th>
+                <th>Category</th>
+                <th>Stability & Pulse</th>
+                <th>Recent Activity</th>
+                <th>Deployment Date</th>
+                <th>Management</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRules.map(rule => (
+                <RuleFleetRow 
+                  key={rule.id} 
+                  rule={rule} 
+                  metrics={getRuleMetrics(metrics, rule.id)}
+                  onOpen={() => onOpenRule(rule.id)}
+                  onRun={() => setActiveTestRuleId(rule.id)}
+                  onDelete={() => onDeleteRule(rule.id)}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-          <div className="card">
-            <div className="sideMetricRow">
-              <div className="sideMetricInfo">
-                <div className="sideMetricLabel">ACTIVE LOGIC NODES</div>
-                <div className="sideMetricValue">{activeRules}</div>
-              </div>
-              <div className="sideMetricMeta">Infrastructure Ready</div>
-            </div>
-          </div>
+      {activeRuleForTesting && (
+        <TestCasesModal 
+          rule={activeRuleForTesting} 
+          onClose={() => setActiveTestRuleId(null)} 
+          onUpdateMetrics={onUpdateMetrics}
+        />
+      )}
+    </div>
+  )
+}
 
-          <div className="card">
-            <div className="cardTitle">Top Performing Rules</div>
-            <div className="pageKicker" style={{ marginBottom: 14 }}>Highest success percentages</div>
-            <div className="topRulesList">
-              {rules.slice(0, 3).map(rule => {
-                const ruleMetrics = getRuleMetrics(metrics, rule.id)
-                const ruleSuccess = ruleMetrics.totalRuns > 0 
-                  ? Math.round((ruleMetrics.successRuns / ruleMetrics.totalRuns) * 100) 
-                  : 0
-                return (
-                  <div key={rule.id} className="topRuleItem" onClick={() => onOpenRule(rule.id)}>
-                    <div className="topRuleInfo">
-                      <div className="topRuleName">{rule.name}</div>
-                      <div className="topRuleCategory">{rule.type}</div>
-                    </div>
-                    <div className="topRuleValue">{ruleSuccess}%</div>
-                    <div className="topRuleTrack">
-                      <div className="topRuleFill" style={{ width: `${ruleSuccess}%` }} />
-                    </div>
+function TestCasesModal({ 
+  rule, 
+  onClose,
+  onUpdateMetrics 
+}: { 
+  rule: RuleRecord
+  onClose: () => void
+  onUpdateMetrics: (updater: (prev: MetricsByRuleId) => MetricsByRuleId) => void
+}) {
+  const [results, setResults] = useState<Record<string, { ok: boolean; message: string }>>({})
+  const testCases = rule.type === 'eligibility' ? rule.eligibilityTestCases || [] : rule.shopTestCases || []
+
+  const runTest = (testCase: any) => {
+    const result = runWorkflow({
+      workflow: rule.workflow,
+      functions: rule.functions ?? [],
+      initialContext: rule.type === 'eligibility' ? testCase.candidate : testCase.shop,
+      engine: {
+        applyAction: (ctx, fn, params) => applyAction(ctx as ShopState, fn, params),
+        evaluateCondition: (ctx, fn, params) =>
+          rule.type === 'eligibility'
+            ? evaluateEligibilityCondition(ctx as CandidateProfile, fn, params)
+            : evaluateCondition(ctx as ShopState, fn, params),
+      },
+    })
+
+    setResults(prev => ({
+      ...prev,
+      [testCase.id]: {
+        ok: result.ok,
+        message: result.ok ? 'Pass' : 'Fail'
+      }
+    }))
+
+    onUpdateMetrics(prev => recordRuleRun(prev, {
+      ruleId: rule.id,
+      ok: result.ok,
+      outcome: result.outcome,
+      stream: rule.type === 'eligibility' ? (testCase.candidate as CandidateProfile).stream : undefined
+    }))
+  }
+
+  return (
+    <div className="modalOverlay" onClick={onClose}>
+      <div className="modalContent" onClick={e => e.stopPropagation()}>
+        <div className="modalHeader">
+          <div className="modalTitle">Test Cases: {rule.name}</div>
+          <button className="modalClose" onClick={onClose}>&times;</button>
+        </div>
+        <div className="modalBody">
+          {testCases.length === 0 ? (
+            <div className="emptyNote">No test cases defined for this rule.</div>
+          ) : (
+            <div className="testCaseList">
+              {testCases.map((tc: any) => (
+                <div key={tc.id} className="testCaseItem">
+                  <div className="testCaseInfo">
+                    <div className="testCaseName">{tc.name}</div>
+                    <div className="testCaseId">ID: {tc.id}</div>
                   </div>
-                )
-              })}
+                  <div className="testCaseActions">
+                    {results[tc.id] && (
+                      <span className={`testResult ${results[tc.id].ok ? 'resultPass' : 'resultFail'}`}>
+                        {results[tc.id].message}
+                      </span>
+                    )}
+                    <button className="btn btnPrimary" onClick={() => runTest(tc)}>Run</button>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+        </div>
+        <div className="modalFooter">
+          <button className="btn" onClick={onClose}>Close</button>
         </div>
       </div>
     </div>
   )
 }
+
+function RuleFleetRow({ 
+  rule, 
+  metrics, 
+  onOpen,
+  onRun,
+  onDelete
+}: { 
+  rule: RuleRecord
+  metrics: any
+  onOpen: () => void
+  onRun: () => void
+  onDelete: () => void
+}) {
+  const successRate = metrics.totalRuns > 0 
+    ? Math.round((metrics.successRuns / metrics.totalRuns) * 100) 
+    : 0
+  
+  const stability = successRate >= 90 ? 'STABLE' : successRate >= 70 ? 'WARNING' : 'CRITICAL'
+  const stabilityColor = stability === 'STABLE' ? '#10b981' : stability === 'WARNING' ? '#f59e0b' : '#ef4444'
+  const stabilityBg = stability === 'STABLE' ? '#ecfdf5' : stability === 'WARNING' ? '#fffbeb' : '#fef2f2'
+
+  // Calculate pulse trend (improving/declining) based on last 5 runs vs overall
+  const recentRuns = metrics.history.slice(0, 5)
+  const recentSuccess = recentRuns.filter((r: any) => r.ok).length
+  const recentRate = recentRuns.length > 0 ? (recentSuccess / recentRuns.length) * 100 : 0
+  const isImproving = recentRate >= successRate
+
+  const lastRunDate = metrics.history.length > 0 
+    ? new Date(metrics.history[0].ts)
+    : null
+  
+  const timeAgo = lastRunDate 
+    ? `${Math.floor((Date.now() - lastRunDate.getTime()) / (1000 * 60 * 60 * 24))}d ago`
+    : 'N/A'
+
+  const deployDate = rule.updatedAt ? new Date(rule.updatedAt).toLocaleDateString() : 'N/A'
+
+  return (
+    <tr>
+      <td>
+        <div className="fleetRuleName" style={{ cursor: 'pointer' }} onClick={onOpen}>{rule.name}</div>
+        <div className="fleetRuleId">ID: {rule.id}</div>
+      </td>
+      <td>
+        <div className="fleetCategory">{rule.type.charAt(0).toUpperCase() + rule.type.slice(1)}</div>
+      </td>
+      <td>
+        <div className="stabilityPulse">
+          <div className="stabilityBadge" style={{ background: stabilityBg, color: stabilityColor }}>
+            <span className="stabilityScore">{successRate}</span> {stability}
+          </div>
+          <div className="pulseTrend">
+            <span className="pulseIcon">📈</span>
+            {isImproving ? 'IMPROVING' : 'DECLINING'}
+          </div>
+        </div>
+      </td>
+      <td>
+        <div className="recentActivity">{metrics.totalRuns} total runs</div>
+      </td>
+      <td>
+        <div className="deploymentDate">
+          <div className="deployMain">{deployDate}</div>
+          <div className="deploySub">Last run: {timeAgo}</div>
+        </div>
+      </td>
+      <td>
+        <div className="fleetManagement">
+          <button className="mgmtBtn mgmtBtnEdit" title="Edit" onClick={onOpen}>✏️</button>
+          <button className="mgmtBtn mgmtBtnRun" title="Run Test Cases" onClick={onRun}>▶️</button>
+          <button className="mgmtBtn mgmtBtnLog" title="View Logs" onClick={onOpen}>📋</button>
+          <button className="mgmtBtn mgmtBtnDel" title="Delete" onClick={() => {
+            if (confirm(`Are you sure you want to delete ${rule.name}?`)) {
+              onDelete()
+            }
+          }}>🗑️</button>
+        </div>
+      </td>
+    </tr>
+  )
+}
+
+
 
 function resolveDashboardTrend(
   rules: RuleRecord[],

@@ -337,6 +337,16 @@ function App() {
               setPage('analytics')
               window.location.hash = '/analytics'
             }}
+            onUpdateRules={setRules}
+            onUpdateMetrics={setMetrics}
+            onDeleteRule={(id) => {
+              setRules((prev) => deleteRule(prev, id))
+              setMetrics((prev) => {
+                const copy = { ...prev }
+                delete copy[id]
+                return copy
+              })
+            }}
           />
         ) : null}
         {page === 'builder' ? (

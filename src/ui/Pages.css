@@ -750,13 +750,294 @@
   color: rgba(34, 197, 94, 0.95);
 }
 
-.streamFail {
-  color: rgba(239, 68, 68, 0.95);
+.fleetSection {
+  margin-top: 24px;
 }
 
-.streamSep {
-  color: rgba(17, 24, 39, 0.35);
+.fleetHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
 }
+
+.fleetTitle {
+  font-size: 20px;
+  font-weight: 850;
+  color: #111827;
+  letter-spacing: -0.4px;
+}
+
+.fleetRefresh {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fleetTableCard {
+  background: white;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.fleetTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.fleetTable th {
+  padding: 16px 24px;
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(17, 24, 39, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.05);
+}
+
+.fleetTable td {
+  padding: 20px 24px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.04);
+}
+
+.fleetTable tr:last-child td {
+  border-bottom: none;
+}
+
+.fleetRuleName {
+  font-weight: 800;
+  font-size: 14px;
+  color: #111827;
+  margin-bottom: 2px;
+}
+
+.fleetRuleId {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.5);
+}
+
+.fleetCategory {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.6);
+}
+
+.stabilityPulse {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stabilityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #ecfdf5;
+  color: #059669;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.stabilityScore {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pulseTrend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #6366f1;
+  text-transform: uppercase;
+}
+
+.pulseIcon {
+  width: 14px;
+  height: 14px;
+  background: #eef2ff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recentActivity {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.5);
+}
+
+.deploymentDate {
+  display: flex;
+  flex-direction: column;
+}
+
+.deployMain {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(17, 24, 39, 0.7);
+}
+
+.deploySub {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.4);
+  margin-top: 2px;
+}
+
+.fleetManagement {
+  display: flex;
+  gap: 12px;
+}
+
+.mgmtBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+
+.mgmtBtn:hover {
+  color: #64748b;
+}
+
+.mgmtBtnEdit:hover { color: #f59e0b; }
+.mgmtBtnRun:hover { color: #3b82f6; }
+.mgmtBtnLog:hover { color: #6366f1; }
+.mgmtBtnDel:hover { color: #ef4444; }
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  overflow: hidden;
+  animation: modalEnter 0.3s ease-out;
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modalHeader {
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 850;
+  color: #111827;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: rgba(17, 24, 39, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.modalBody {
+  padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modalFooter {
+  padding: 20px 28px;
+  border-top: 1px solid rgba(17, 24, 39, 0.06);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.testCaseList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.testCaseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid rgba(17, 24, 39, 0.04);
+  border-radius: 16px;
+}
+
+.testCaseName {
+  font-weight: 700;
+  color: #111827;
+  font-size: 14px;
+}
+
+.testCaseId {
+  font-size: 11px;
+  color: rgba(17, 24, 39, 0.4);
+  margin-top: 2px;
+}
+
+.testCaseActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.testResult {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.resultPass {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.resultFail {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+
 
 .ruleCardActions {
   display: flex;
