@@ -14,6 +14,7 @@ export type WorkflowNodeData = {
   icon?: string
   kind: NodeKind
   config?: NodeConfig
+  generatedBy?: string
 }
 
 export type WorkflowNode = Node<WorkflowNodeData, 'workflow'>

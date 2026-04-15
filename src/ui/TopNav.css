@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(17, 24, 39, 0.72);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(10px);
 }
@@ -30,13 +30,13 @@
   border-radius: 14px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
+  box-shadow: 0 10px 24px rgba(255, 255, 255, 0.08);
 }
 
 .navBrandText {
-  color: rgba(17, 24, 39, 0.86);
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .navTabs {
@@ -46,9 +46,9 @@
 }
 
 .navTab {
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: rgba(255, 255, 255, 0.7);
-  color: rgba(17, 24, 39, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(17, 24, 39, 0.7);
+  color: rgba(255, 255, 255, 0.72);
   border-radius: 999px;
   padding: 8px 12px;
   cursor: pointer;
@@ -59,7 +59,7 @@
 .navTabActive {
   border-color: rgba(124, 58, 237, 0.35);
   background: rgba(124, 58, 237, 0.08);
-  color: rgba(17, 24, 39, 0.84);
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .navRight {

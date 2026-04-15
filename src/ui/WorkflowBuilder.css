@@ -10,7 +10,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(17, 24, 39, 0.75);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(10px);
 }
@@ -62,8 +62,8 @@
   max-width: 240px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(17, 24, 39, 0.12);
-  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(17, 24, 39, 0.8);
   outline: none;
   transition: box-shadow 120ms ease, border-color 120ms ease;
 }
@@ -108,7 +108,7 @@
 .builderSidebar {
   padding: 14px 14px;
   border-right: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(17, 24, 39, 0.55);
   backdrop-filter: blur(10px);
   overflow-y: auto;
   overflow-x: hidden;
@@ -119,11 +119,11 @@
 }
 
 .sideSection {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(17, 24, 39, 0.8);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 12px;
-  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 10px 22px rgba(255, 255, 255, 0.06);
   min-width: 0;
   width: 100%;
 }
@@ -168,9 +168,9 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.03);
-  color: rgba(17, 24, 39, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.55);
   transition: transform 140ms ease;
   flex: 0 0 auto;
 }
@@ -190,7 +190,7 @@
 
 .listTitle {
   font-size: 11px;
-  color: rgba(17, 24, 39, 0.55);
+  color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
   font-weight: 900;
   letter-spacing: 0.4px;
@@ -202,8 +202,8 @@
   gap: 10px;
   align-items: center;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .canvasNodeItemSelected {
@@ -255,7 +255,7 @@
 
 .canvasNodeKind {
   font-size: 11px;
-  color: rgba(17, 24, 39, 0.55);
+  color: rgba(255, 255, 255, 0.55);
   text-transform: capitalize;
 }
 
@@ -264,10 +264,10 @@
   height: 34px;
   border-radius: 12px;
   margin-right: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
   cursor: pointer;
-  color: rgba(17, 24, 39, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .canvasNodeDelete:hover {
@@ -285,18 +285,18 @@
   flex: 1 1 0;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(17, 24, 39, 0.85);
   cursor: pointer;
   font-weight: 800;
   letter-spacing: -0.2px;
-  color: rgba(17, 24, 39, 0.72);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .tabActive {
   border-color: rgba(124, 58, 237, 0.35);
   box-shadow: 0 14px 30px rgba(124, 58, 237, 0.14);
-  color: rgba(17, 24, 39, 0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .palette {
@@ -310,8 +310,8 @@
   align-items: center;
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(17, 24, 39, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: grab;
   user-select: none;
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
@@ -320,8 +320,8 @@
 
 .paletteItem:hover {
   transform: translateY(-1px);
-  border-color: rgba(17, 24, 39, 0.16);
-  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 14px 30px rgba(255, 255, 255, 0.1);
 }
 
 .paletteItem:active {
@@ -358,8 +358,8 @@
   gap: 10px;
   margin-top: 12px;
   padding: 10px 12px;
-  background: rgba(17, 24, 39, 0.04);
-  border: 1px solid rgba(17, 24, 39, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 14px;
 }
 
@@ -371,7 +371,7 @@
 .sideValue {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 12px;
-  color: rgba(17, 24, 39, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -387,7 +387,7 @@
 
 .sideDivider {
   height: 1px;
-  background: rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.08);
   margin: 12px 0;
 }
 
@@ -397,39 +397,39 @@
 }
 
 .miniMap {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(17, 24, 39, 0.92) !important;
   border-radius: 14px !important;
-  border: 1px solid rgba(17, 24, 39, 0.1) !important;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 12px 28px rgba(255, 255, 255, 0.12) !important;
 }
 
 .flowControls {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(17, 24, 39, 0.92) !important;
   border-radius: 14px !important;
-  border: 1px solid rgba(17, 24, 39, 0.1) !important;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 12px 28px rgba(255, 255, 255, 0.12) !important;
 }
 
 .toast {
   position: absolute;
   left: 16px;
   bottom: 16px;
-  background: rgba(17, 24, 39, 0.9);
+  background: rgba(255, 255, 255, 0.9);
   color: white;
   padding: 10px 12px;
   border-radius: 14px;
   font-size: 13px;
-  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.18);
+  box-shadow: 0 18px 44px rgba(255, 255, 255, 0.18);
 }
 
 .boardHint {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(17, 24, 39, 0.92) !important;
   border-radius: 14px !important;
-  border: 1px solid rgba(17, 24, 39, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   padding: 10px 12px !important;
   font-size: 12px !important;
-  color: rgba(17, 24, 39, 0.7) !important;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 12px 28px rgba(255, 255, 255, 0.12) !important;
   margin: 16px !important;
 }
 
@@ -456,11 +456,11 @@
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(17, 24, 39, 0.12);
-  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(17, 24, 39, 0.92);
   outline: none;
   transition: box-shadow 120ms ease, border-color 120ms ease;
-  color: rgba(17, 24, 39, 0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .formInput:focus,
@@ -475,17 +475,17 @@
   justify-content: center;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.04);
-  color: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 700;
   width: fit-content;
   text-transform: capitalize;
 }
 
 .configCard {
-  background: rgba(17, 24, 39, 0.035);
-  border: 1px solid rgba(17, 24, 39, 0.07);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
   padding: 12px;
   display: grid;
@@ -495,7 +495,7 @@
 .configTitle {
   font-weight: 800;
   letter-spacing: -0.25px;
-  color: rgba(17, 24, 39, 0.8);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 12px;
   text-transform: uppercase;
 }
@@ -515,8 +515,8 @@
   text-align: left;
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: rgba(17, 24, 39, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
   min-width: 0;
@@ -524,8 +524,8 @@
 
 .fnItem:hover {
   transform: translateY(-1px);
-  border-color: rgba(17, 24, 39, 0.16);
-  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 14px 30px rgba(255, 255, 255, 0.1);
 }
 
 .fnIcon {
@@ -551,9 +551,9 @@
   font-size: 11px;
   padding: 2px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.03);
-  color: rgba(17, 24, 39, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   font-weight: 800;
 }
@@ -570,8 +570,8 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .stockName {
@@ -580,7 +580,7 @@
 
 .stockQty {
   font-family: ui-monospace, Consolas, monospace;
-  color: rgba(17, 24, 39, 0.65);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .runLog {
@@ -592,8 +592,8 @@
 .logRow {
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .logOk {
@@ -614,7 +614,7 @@
 
 .logMsg {
   margin-top: 4px;
-  color: rgba(17, 24, 39, 0.65);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 12px;
   line-height: 1.35;
 }
@@ -625,8 +625,8 @@
   gap: 10px;
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.85);
 }
 
 .createFnActions {
@@ -641,16 +641,16 @@
   gap: 10px;
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.85);
 }
 
 .fnOutput {
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.04);
-  color: rgba(17, 24, 39, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
   line-height: 1.35;
 }
@@ -669,13 +669,13 @@
 .dashCard {
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .dashCardKey {
   font-size: 11px;
-  color: rgba(17, 24, 39, 0.55);
+  color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
   font-weight: 850;
   letter-spacing: 0.4px;
@@ -685,7 +685,7 @@
   margin-top: 6px;
   font-weight: 850;
   letter-spacing: -0.2px;
-  color: rgba(17, 24, 39, 0.86);
+  color: rgba(255, 255, 255, 0.86);
   display: flex;
   gap: 8px;
   align-items: center;
@@ -697,7 +697,7 @@
 
 .dashCardSub {
   margin-top: 6px;
-  color: rgba(17, 24, 39, 0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
   line-height: 1.35;
 }
@@ -705,8 +705,8 @@
 .chart {
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .chartTitle {
@@ -714,7 +714,7 @@
   letter-spacing: -0.2px;
   font-size: 12px;
   margin-bottom: 10px;
-  color: rgba(17, 24, 39, 0.75);
+  color: rgba(255, 255, 255, 0.75);
   text-transform: uppercase;
 }
 
@@ -728,7 +728,7 @@
 
 .chartLabel {
   font-size: 12px;
-  color: rgba(17, 24, 39, 0.62);
+  color: rgba(255, 255, 255, 0.62);
   font-weight: 750;
 }
 
@@ -736,7 +736,7 @@
   position: relative;
   height: 12px;
   border-radius: 999px;
-  background: rgba(17, 24, 39, 0.07);
+  background: rgba(255, 255, 255, 0.07);
   overflow: hidden;
 }
 
@@ -766,7 +766,7 @@
   top: -3px;
   width: 2px;
   height: 18px;
-  background: rgba(17, 24, 39, 0.6);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 2px;
 }
 
@@ -774,12 +774,12 @@
   text-align: right;
   font-family: ui-monospace, Consolas, monospace;
   font-size: 12px;
-  color: rgba(17, 24, 39, 0.65);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .chartHint {
   margin-top: 10px;
-  color: rgba(17, 24, 39, 0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
 }
 
@@ -795,9 +795,9 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
-  color: rgba(17, 24, 39, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
+  color: rgba(255, 255, 255, 0.75);
   font-weight: 800;
   user-select: none;
 }
@@ -837,8 +837,8 @@
   gap: 10px;
   align-items: center;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .caseItemSelected {
@@ -852,8 +852,8 @@
   gap: 10px;
   align-items: center;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .caseMain {
@@ -873,7 +873,7 @@
 .caseName {
   font-weight: 900;
   letter-spacing: -0.2px;
-  color: rgba(17, 24, 39, 0.86);
+  color: rgba(255, 255, 255, 0.86);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -883,7 +883,7 @@
 .caseMeta {
   margin-top: 2px;
   font-size: 12px;
-  color: rgba(17, 24, 39, 0.55);
+  color: rgba(255, 255, 255, 0.55);
   line-height: 1.35;
 }
 
@@ -892,10 +892,10 @@
   height: 34px;
   border-radius: 12px;
   margin-right: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
   cursor: pointer;
-  color: rgba(17, 24, 39, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .caseDelete:hover {
@@ -907,8 +907,8 @@
 .gateCard {
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
   display: grid;
   gap: 10px;
 }
@@ -925,14 +925,14 @@
   align-items: center;
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(17, 24, 39, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .gateName {
   font-weight: 850;
   letter-spacing: -0.2px;
-  color: rgba(17, 24, 39, 0.82);
+  color: rgba(255, 255, 255, 0.82);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -943,8 +943,8 @@
   font-size: 12px;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(17, 24, 39, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
   font-weight: 950;
 }
 

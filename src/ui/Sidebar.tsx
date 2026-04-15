@@ -1,6 +1,7 @@
 import './Sidebar.css'
+import { BrainCircuit, Database, ListFilter } from 'lucide-react'
 
-export type SidebarPage = 'dashboard' | 'builder' | 'simulation' | 'analytics' | 'templates' | 'history' | 'settings'
+export type SidebarPage = 'dashboard' | 'rules' | 'builder' | 'flowlab' | 'analytics' | 'activity' | 'settings' | 'agent' | 'ml-hub' | 'model-analytics'
 
 export function Sidebar({
   page,
@@ -10,13 +11,14 @@ export function Sidebar({
   onNavigate: (page: SidebarPage) => void
   onCreateNewRule: () => void
 }) {
-  const menuItems: { id: SidebarPage; label: string; icon?: string }[] = [
-    { id: 'dashboard', label: 'Dashboard' },
+  const menuItems: { id: SidebarPage; label: string; icon?: any }[] = [
+    { id: 'agent', icon: BrainCircuit, label: 'Agent Studio' },
+    { id: 'ml-hub', icon: Database, label: 'ML & Datasets' },
+    { id: 'rules', icon: ListFilter, label: 'Rule Directory' },
     { id: 'builder', label: 'Rule Builder' },
-    { id: 'simulation', label: 'Simulation Lab' },
+    { id: 'flowlab', label: 'Simulation Lab' },
     { id: 'analytics', label: 'Analytics' },
-    { id: 'templates', label: 'Templates' },
-    { id: 'history', label: 'History' },
+    { id: 'activity', label: 'History' },
     { id: 'settings', label: 'Settings' },
   ]
 

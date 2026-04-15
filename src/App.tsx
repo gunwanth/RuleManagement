@@ -10,9 +10,12 @@ import type { MetricsByRuleId } from './analytics/types'
 import { normalizeMetricsCollection, recordRuleRun } from './analytics/metrics'
 import { Sidebar, type SidebarPage } from './ui/Sidebar'
 import { DashboardOverview } from './ui/DashboardOverview'
+import { AgentStudioPage } from './ui/AgentStudioPage'
 import { RuleManagementPage } from './ui/RuleManagementPage'
 import { FlowLabPage } from './ui/FlowLabPage'
 import { AnalyticsPage } from './ui/AnalyticsPage'
+import { MachineLearningHub } from './ui/MachineLearningHub'
+import { ModelAnalyticsPage } from './ui/ModelAnalyticsPage'
 import type { FunctionDef } from './functions/types'
 import { createSweetShopSeedFunctions, createSweetShopSeedWorkflow } from './rules/seed'
 import { createEligibilitySeedFunctions, createEligibilitySeedWorkflow } from './rules/eligibilitySeed'
@@ -29,6 +32,7 @@ import {
 import type { RuleType } from './rules/types'
 import { createDefaultEligibilityTestCases } from './eligibility/testCases'
 import { RULE_TEMPLATES, SYSTEM_RULE_TEMPLATES } from './rules/templatesSeed'
+import type { MLModel } from './ml/types'
 
 function Card({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
@@ -46,7 +50,7 @@ function App() {
   )
   const [page, setPage] = useLocalStorageState<SidebarPage>(
     'sweetshop.page.v1',
-    'dashboard',
+    'agent',
   )
   const [workflow, setWorkflow] = useState<WorkflowState>(() =>
     createBlankWorkflow(),
@@ -62,9 +66,83 @@ function App() {
     'sweetshop.activeRuleId.v1',
     null,
   )
+  const [activeModelId, setActiveModelId] = useLocalStorageState<string | null>(
+    'sweetshop.activeModelId.v1',
+    null,
+  )
   const [metrics, setMetrics] = useLocalStorageState<MetricsByRuleId>(
     'sweetshop.metrics.v1',
     {},
+  )
+  const [mlModels, setMlModels] = useLocalStorageState<MLModel[]>(
+    'sweetshop.mlmodels.v1',
+    [
+      {
+        id: 'ml-fraud-v1',
+        name: 'Transaction Fraud Predictor',
+        status: 'ready',
+        accuracy: 94.2,
+        type: 'anomaly_detection',
+        algorithm: 'Random Forest',
+        variables: ['Amount', 'LocationRisk', 'TimeOfDay', 'DeviceTrust'],
+        recordsProcessed: 142000,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'ml-churn-v2',
+        name: 'Customer Churn Analyzer',
+        status: 'ready',
+        accuracy: 89.1,
+        type: 'classification',
+        algorithm: 'KNN',
+        variables: ['LoginFreq', 'TicketCount', 'NPS', 'SpendVelocity'],
+        recordsProcessed: 54000,
+        createdAt: new Date(Date.now() - 86400000).toISOString()
+      },
+      {
+        id: 'ml-credit-v1',
+        name: 'Credit Risk Scorer',
+        status: 'ready',
+        accuracy: 91.5,
+        type: 'regression',
+        algorithm: 'Neural Network',
+        variables: ['CreditHistory', 'Income', 'DebtRatio', 'EmploymentYears'],
+        recordsProcessed: 320000,
+        createdAt: new Date(Date.now() - 186400000).toISOString()
+      },
+      {
+        id: 'ml-recom-v1',
+        name: 'Product Recommendation Engine',
+        status: 'ready',
+        accuracy: 87.4,
+        type: 'classification',
+        algorithm: 'Gradient Boosting',
+        variables: ['PastPurchases', 'CartAbandonRate', 'CategoryPreference'],
+        recordsProcessed: 88000,
+        createdAt: new Date(Date.now() - 286400000).toISOString()
+      },
+      {
+        id: 'ml-spam-v1',
+        name: 'Support Ticket Spam Filter',
+        status: 'training',
+        type: 'classification',
+        algorithm: 'SVM',
+        variables: ['TextLength', 'KeywordFlags', 'SenderDomainTrust'],
+        recordsProcessed: 12000,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'ml-price-v1',
+        name: 'Dynamic Pricing Optimizer',
+        status: 'ready',
+        accuracy: 82.3,
+        type: 'regression',
+        algorithm: 'Logistic Regression',
+        variables: ['CompetitorPrice', 'DemandSurge', 'InventoryLevel'],
+        recordsProcessed: 250000,
+        createdAt: new Date(Date.now() - 486400000).toISOString()
+      }
+    ]
   )
 
   useEffect(() => {
@@ -224,11 +302,19 @@ function App() {
         return
       }
 
-      const validPages: SidebarPage[] = ['dashboard', 'builder', 'analytics', 'templates', 'history', 'settings']
+      if (hash.startsWith('/model-analytics/')) {
+        const modelId = decodeURIComponent(hash.slice('/model-analytics/'.length))
+        setActiveModelId(modelId)
+        setPage('model-analytics')
+        setView('shell')
+        return
+      }
+
+      const validPages: SidebarPage[] = ['agent', 'dashboard', 'builder', 'analytics', 'rules', 'activity', 'settings', 'ml-hub', 'model-analytics']
       const pageMatch = validPages.find(p => hash === `/${p}`)
       
       if (pageMatch || hash === '/rules' || hash === '/flowlab') {
-        const nextPage = pageMatch || (hash === '/flowlab' ? 'simulation' : 'dashboard')
+        const nextPage = pageMatch || (hash === '/flowlab' ? 'flowlab' : 'dashboard')
         setPage(nextPage)
         setView('shell')
       }
@@ -327,6 +413,13 @@ function App() {
         onCreateNewRule={createNewRule}
       />
       <main style={{ flex: 1, overflowY: 'auto' }}>
+        {page === 'agent' ? (
+           <AgentStudioPage 
+             mlModels={mlModels}
+             onRuleCreated={(r) => setRules(prev => [r, ...prev])} 
+             onOpenRule={openRule} 
+           />
+        ) : null}
         {page === 'dashboard' ? (
           <DashboardOverview 
             rules={rules} 
@@ -399,7 +492,25 @@ function App() {
             }}
           />
         ) : null}
-        {page === 'simulation' ? (
+        {page === 'ml-hub' ? (
+          <MachineLearningHub 
+            models={mlModels} 
+            setModels={setMlModels} 
+            onOpenMetrics={(modelId) => {
+              window.location.hash = `/model-analytics/${encodeURIComponent(modelId)}`
+            }} 
+          />
+        ) : null}
+        {page === 'model-analytics' ? (
+          <ModelAnalyticsPage 
+            model={mlModels.find(m => m.id === activeModelId)} 
+            onBack={() => { window.location.hash = '/ml-hub' }}
+            onUpdateModel={(updated) => {
+              setMlModels(prev => prev.map(m => m.id === updated.id ? updated : m))
+            }}
+          />
+        ) : null}
+        {page === 'flowlab' ? (
           <FlowLabPage
             rules={rules.filter(r => !r.name.includes('Template') && !r.id.includes('template'))}
             metrics={metrics}
@@ -425,7 +536,7 @@ function App() {
         {page === 'analytics' && (
           <AnalyticsPage rules={rules} metrics={metrics} />
         )}
-        {page === 'templates' && (
+        {page === 'rules' && (
           <RuleManagementPage
             isTemplatesView
             rules={rules}
@@ -450,7 +561,7 @@ function App() {
             onDeleteRule={() => {}}
           />
         )}
-        {page === 'history' && (
+        {page === 'activity' && (
           <div className="pageRoot">
             <div className="pageHeader">
               <div className="pageTitle">Transaction History</div>
@@ -464,7 +575,7 @@ function App() {
                   <div key={`${ruleId}-${i}`} className="card" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'grid', gap: '4px' }}>
                       <div style={{ fontWeight: 900, fontSize: '14px' }}>{ruleName}</div>
-                      <div style={{ fontSize: '12px', color: 'rgba(17, 24, 39, 0.5)' }}>
+                      <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.5)' }}>
                         {new Date(event.ts).toLocaleString()}
                       </div>
                     </div>
@@ -481,7 +592,7 @@ function App() {
                     <div key={`${ruleId}-${i}`} className="card" style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'grid', gap: '4px' }}>
                         <div style={{ fontWeight: 900, fontSize: '14px' }}>{ruleName}</div>
-                        <div style={{ fontSize: '12px', color: 'rgba(17, 24, 39, 0.5)' }}>
+                        <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.5)' }}>
                           {new Date(event.ts).toLocaleString()}
                         </div>
                       </div>

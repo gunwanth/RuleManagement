@@ -217,7 +217,7 @@ export function WorkflowBuilder({
 
   const edgeBaseStyle = useMemo(
     () => ({
-      stroke: 'rgba(17, 24, 39, 0.32)',
+      stroke: 'rgba(255, 255, 255, 0.32)',
       strokeWidth: 2,
     }),
     [],
@@ -1272,7 +1272,7 @@ export function WorkflowBuilder({
               variant={BackgroundVariant.Dots}
               gap={18}
               size={1.25}
-              color="rgba(17, 24, 39, 0.18)"
+              color="rgba(255, 255, 255, 0.18)"
             />
             <MiniMap
               pannable

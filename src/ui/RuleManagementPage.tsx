@@ -107,7 +107,7 @@ export function RuleManagementPage({
                             <div className="ruleCardActions" style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                               <button className="btn btnPrimary" onClick={(e) => { e.stopPropagation(); onOpenRule(r.id) }} type="button">Open Builder</button>
                               <button className="btn" onClick={(e) => { e.stopPropagation(); onOpenRule(r.id) }} type="button">Manual Test Cases</button>
-                              <button className="btn" onClick={(e) => { e.stopPropagation(); onNavigate?.('simulation') }} type="button">Simulation Lab</button>
+                              <button className="btn" onClick={(e) => { e.stopPropagation(); onNavigate?.('flowlab') }} type="button">Simulation Lab</button>
                             </div>
                           </div>
                         )

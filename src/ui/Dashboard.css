@@ -21,7 +21,7 @@
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(17, 24, 39, 0.75);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
   display: grid;
@@ -56,7 +56,7 @@
 }
 
 .dashHeroCard {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(17, 24, 39, 0.8);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
@@ -95,10 +95,10 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: white;
+  background: rgba(17, 24, 39, 0.85);
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 10px 24px rgba(255, 255, 255, 0.08);
   font-weight: 650;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .dashPreviewArrow {
-  color: rgba(17, 24, 39, 0.35);
+  color: rgba(255, 255, 255, 0.35);
   font-weight: 700;
 }
 
@@ -137,7 +137,7 @@
   padding: 2px 8px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(17, 24, 39, 0.85);
   color: var(--text);
   font-family: ui-monospace, Consolas, monospace;
   font-size: 12px;
@@ -145,7 +145,7 @@
 }
 
 .dashSideCard {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(17, 24, 39, 0.75);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -179,8 +179,8 @@
   gap: 12px;
   padding: 12px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 .ruleMain {
