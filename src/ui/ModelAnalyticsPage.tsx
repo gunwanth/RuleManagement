@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+
 import { ChevronLeft, Database, Activity, GitCommit, Layers, Plus, Settings } from 'lucide-react'
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 import type { MLModel } from '../ml/types'
@@ -13,7 +13,7 @@ interface Props {
 export function ModelAnalyticsPage({ model, onBack, onUpdateModel }: Props) {
   // Generate some dummy initial data based on the model
   const dataLength = 20
-  const [chartData, setChartData] = useState(() => {
+  const [chartData] = useState(() => {
     return Array.from({ length: dataLength }).map((_, i) => ({
       name: `T-${dataLength - i}`,
       val1: Math.floor(Math.random() * 100) + 20,

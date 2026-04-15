@@ -5,6 +5,7 @@ export type NodeKind = 'start' | 'action' | 'condition' | 'end'
 export type NodeConfig =
   | {
       functionId: string
+      algorithm?: string
       params?: Record<string, unknown>
     }
   | null
