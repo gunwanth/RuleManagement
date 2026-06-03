@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --config vite.config.js",
-    "build": "tsc -b && vite build --config vite.config.js",
+    "dev": "node api.js && vite --config vite.config.js",
+    "build": "node api.js && tsc -b && vite build --config vite.config.js",
     "lint": "eslint .",
     "preview": "vite preview --config vite.config.js"
   },

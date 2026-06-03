@@ -1,4 +1,4 @@
-# Sweet Shop Workflow Builder (Figma-style)
+# AI Rule Builder
 
 A modern React + React Flow UI that mimics a Figma-like workflow builder for Sweet Shop Management rules.
 
